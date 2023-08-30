@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Persistence;
 
@@ -10,9 +11,11 @@ using Persistence;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20230830172909_AddPlatforms")]
+    partial class AddPlatforms
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "7.0.10");
@@ -29,6 +32,9 @@ namespace Persistence.Migrations
                     b.Property<long?>("IgdbId")
                         .HasColumnType("INTEGER");
 
+                    b.Property<Guid?>("PlatformId")
+                        .HasColumnType("TEXT");
+
                     b.Property<DateTimeOffset?>("ReleaseDate")
                         .HasColumnType("TEXT");
 
@@ -43,6 +49,8 @@ namespace Persistence.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("PlatformId");
+
                     b.ToTable("Games");
                 });
 
@@ -53,34 +61,24 @@ namespace Persistence.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Abbreviation")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("AlternativeName")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<int>("Generation")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<Guid?>("PlatformFamilyId")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Slug")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Summary")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("PlatformFamilyId");
 
                     b.ToTable("Platforms");
                 });
@@ -102,43 +100,13 @@ namespace Persistence.Migrations
                     b.ToTable("PlatformFamilies");
                 });
 
-            modelBuilder.Entity("GamePlatform", b =>
+            modelBuilder.Entity("Domain.Game", b =>
                 {
-                    b.Property<Guid>("GamesId")
-                        .HasColumnType("TEXT");
-
-                    b.Property<Guid>("PlatformsId")
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("GamesId", "PlatformsId");
-
-                    b.HasIndex("PlatformsId");
-
-                    b.ToTable("GamePlatform");
-                });
-
-            modelBuilder.Entity("Domain.Platform", b =>
-                {
-                    b.HasOne("Domain.PlatformFamily", "PlatformFamily")
+                    b.HasOne("Domain.Platform", "Platform")
                         .WithMany()
-                        .HasForeignKey("PlatformFamilyId");
+                        .HasForeignKey("PlatformId");
 
-                    b.Navigation("PlatformFamily");
-                });
-
-            modelBuilder.Entity("GamePlatform", b =>
-                {
-                    b.HasOne("Domain.Game", null)
-                        .WithMany()
-                        .HasForeignKey("GamesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Domain.Platform", null)
-                        .WithMany()
-                        .HasForeignKey("PlatformsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Navigation("Platform");
                 });
 #pragma warning restore 612, 618
         }

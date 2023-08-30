@@ -11,7 +11,7 @@ using Persistence;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20230828220317_InitialCreate")]
+    [Migration("20230829230911_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -29,12 +29,24 @@ namespace Persistence.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("TEXT");
 
+                    b.Property<long?>("IgdbId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTimeOffset?>("ReleaseDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Slug")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("StoryLine")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Title")
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Type");
+                    b.ToTable("Games");
                 });
 #pragma warning restore 612, 618
         }
