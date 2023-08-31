@@ -40,14 +40,14 @@ namespace Persistence.Seeders
 
         private static async Task<ApiGame[]> FetchPage(IGDBClient client, int limit, int offset)
         {
-             var query = $"""
-                          
-                                          fields *;
-                                          sort first_release_date asc;
-                                          limit {limit};
-                                          offset {offset};
+            var query = $"""
+                         
+                                         fields *,platforms.*; 
+                                         sort first_release_date asc;
+                                         limit {limit};
+                                         offset {offset};
                                      
-                          """;
+                         """;
 
             var games = await client.QueryAsync<ApiGame>(IGDBClient.Endpoints.Games, query);
             return games;
@@ -65,14 +65,29 @@ namespace Persistence.Seeders
                     Description = apiGame.Summary,
                     Slug = apiGame.Slug,
                     StoryLine = apiGame.Storyline,
-                    ReleaseDate = apiGame.FirstReleaseDate
+                    ReleaseDate = apiGame.FirstReleaseDate,
                 };
-                
+
+                if (apiGame.Platforms.Values.Length > 0)
+                {
+                    foreach (var apiPlatform in apiGame.Platforms.Values)
+                    {
+                        var matchingPlatform =
+                            context.Platforms.FirstOrDefault(platform => platform.IgdbId == apiPlatform.Id);
+
+                        if (matchingPlatform != null)
+                        {
+                            myGame.Platforms.Add(matchingPlatform);
+                        }
+                    }
+                }
+
                 await context.Games.AddRangeAsync(myGame);
-                
+
                 // Now you have a custom Game entity with data from the API response
                 Console.WriteLine($"Custom Game Name: {myGame.Title}");
             }
+
             await context.SaveChangesAsync();
         }
     }
