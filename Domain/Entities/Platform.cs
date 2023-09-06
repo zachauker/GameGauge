@@ -1,5 +1,4 @@
-#nullable enable
-namespace Domain;
+namespace Domain.Entities;
 
 public class Platform
 {

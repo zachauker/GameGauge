@@ -1,6 +1,6 @@
 using System.Runtime.InteropServices.JavaScript;
 
-namespace Domain;
+namespace Domain.Entities;
 
 public class Game
 {
@@ -11,7 +11,10 @@ public class Game
     public string Slug { get; set; }
     public long? IgdbId { get; set; }
     public DateTimeOffset? ReleaseDate { get; set; }
+    public int? Rating { get; set; }
+    public int NumberRatings { get; set; }
     public List<Platform> Platforms { get; set; } = new();
-
+    public List<Genre> Genres { get; set; } = new();
+    public List<Engine> Engines { get; set; }
 
 }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using IGDB;
 using IGDB.Models;
 using ApiGame = IGDB.Models.Game;
-using DomainGame = Domain.Game;
+using DomainGame = Domain.Entities.Game;
 
 namespace Persistence.Seeders
 {
@@ -22,14 +22,11 @@ namespace Persistence.Seeders
             // var igdb = new IGDBClient(
             //     Environment.GetEnvironmentVariable("IGDB_CLIENT_ID"),
             //     Environment.GetEnvironmentVariable("IGDB_CLIENT_SECRET"));
-
             var igdb = new IGDBClient("3p2ubjeep5tco48ebgolo2o4a1cjek", "9lzmwsx9eai2lkqg1ye5waxovtltrp");
-
 
             var games = await FetchPage(igdb, limit, offset);
             ProcessGames(games, context);
-
-
+            
             while (games.Length == limit)
             {
                 offset += limit;
@@ -42,8 +39,8 @@ namespace Persistence.Seeders
         {
             var query = $"""
                          
-                                         fields *,platforms.*; 
-                                         sort first_release_date asc;
+                                         fields *,platforms.*,genres.*,game_engines.*; 
+                                         sort first_release_date desc;
                                          limit {limit};
                                          offset {offset};
                                      
@@ -53,7 +50,7 @@ namespace Persistence.Seeders
             return games;
         }
 
-        private static async void ProcessGames(ApiGame[] apiGames, DataContext context)
+        private static async void ProcessGames(IEnumerable<ApiGame> apiGames, DataContext context)
         {
             foreach (var apiGame in apiGames)
             {
@@ -68,7 +65,7 @@ namespace Persistence.Seeders
                     ReleaseDate = apiGame.FirstReleaseDate,
                 };
 
-                if (apiGame.Platforms.Values.Length > 0)
+                if (apiGame.Platforms != null)
                 {
                     foreach (var apiPlatform in apiGame.Platforms.Values)
                     {
@@ -78,6 +75,32 @@ namespace Persistence.Seeders
                         if (matchingPlatform != null)
                         {
                             myGame.Platforms.Add(matchingPlatform);
+                        }
+                    }
+                }
+
+                if (apiGame.Genres != null)
+                {
+                    foreach (var apiGenre in apiGame.Genres.Values)
+                    {
+                        var matchingGenre = context.Genres.FirstOrDefault(genre => genre.IgdbId == apiGenre.Id);
+
+                        if (matchingGenre != null)
+                        {
+                            myGame.Genres.Add(matchingGenre);
+                        }
+                    }
+                }
+
+                if (apiGame.Genres != null)
+                {
+                    foreach (var apiEngine in apiGame.GameEngines.Values)
+                    {
+                        var matchingEngine = context.Engines.FirstOrDefault(engine => engine.IgdbId == apiEngine.Id);
+
+                        if (matchingEngine != null)
+                        {
+                            myGame.Engines.Add(matchingEngine);
                         }
                     }
                 }

@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Persistence;
+using Persistence.Seeders;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,6 +28,9 @@ try
 {
     var context = services.GetRequiredService<DataContext>();
     await context.Database.MigrateAsync();
+    await GenreSeed.SeedData(context);
+    await PlatformSeed.SeedData(context);
+    await GameSeed.SeedData(context);
 }
 catch (Exception e)
 {
