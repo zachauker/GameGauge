@@ -1,4 +1,4 @@
-using Domain;
+using Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
@@ -16,6 +16,12 @@ public class GamesController : BaseApiController
     [HttpGet]
     public async Task<ActionResult<List<Game>>> GetGames()
     {
-        return await _context.Games.ToListAsync();
+        return await _context.Games.Include(game => game.Platforms).ToListAsync();
+    }
+
+    [HttpGet("{slug}")]
+    public async Task<ActionResult<Game>> GetGame(string slug)
+    {
+        return await _context.Games.FirstAsync(game => game.Slug == slug);
     }
 }

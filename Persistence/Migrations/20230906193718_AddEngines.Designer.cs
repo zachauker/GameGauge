@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Persistence;
 
@@ -10,61 +11,14 @@ using Persistence;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20230906193718_AddEngines")]
+    partial class AddEngines
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "7.0.10");
-
-            modelBuilder.Entity("CompanyGame", b =>
-                {
-                    b.Property<Guid>("CompaniesId")
-                        .HasColumnType("TEXT");
-
-                    b.Property<Guid>("GamesId")
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("CompaniesId", "GamesId");
-
-                    b.HasIndex("GamesId");
-
-                    b.ToTable("CompanyGame");
-                });
-
-            modelBuilder.Entity("Domain.Entities.Company", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Country")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTimeOffset?>("FoundedDate")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("TEXT");
-
-                    b.Property<Guid?>("ParentId")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Slug")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Url")
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ParentId");
-
-                    b.ToTable("Company");
-                });
 
             modelBuilder.Entity("Domain.Entities.Engine", b =>
                 {
@@ -239,30 +193,6 @@ namespace Persistence.Migrations
                     b.HasIndex("PlatformsId");
 
                     b.ToTable("GamePlatform");
-                });
-
-            modelBuilder.Entity("CompanyGame", b =>
-                {
-                    b.HasOne("Domain.Entities.Company", null)
-                        .WithMany()
-                        .HasForeignKey("CompaniesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Domain.Entities.Game", null)
-                        .WithMany()
-                        .HasForeignKey("GamesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Domain.Entities.Company", b =>
-                {
-                    b.HasOne("Domain.Entities.Company", "Parent")
-                        .WithMany()
-                        .HasForeignKey("ParentId");
-
-                    b.Navigation("Parent");
                 });
 
             modelBuilder.Entity("Domain.Entities.Engine", b =>

@@ -8,5 +8,4 @@ public class Engine
     public string Slug { get; set; }
     public long? IgdbId { get; set; }
     public List<Platform>? Platforms { get; set; }
-    
 }

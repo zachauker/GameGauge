@@ -15,6 +15,7 @@ public class Game
     public int NumberRatings { get; set; }
     public List<Platform> Platforms { get; set; } = new();
     public List<Genre> Genres { get; set; } = new();
-    public List<Engine> Engines { get; set; }
+    public List<Engine> Engines { get; set; } = new();
+    public List<Company> Companies { get; set; } = new();
 
 }

@@ -7,8 +7,8 @@ using IGDB;
 using IGDB.Models;
 using ApiPlatform = IGDB.Models.Platform;
 using ApiPlatformFamily = IGDB.Models.PlatformFamily;
-using DomainPlatform = Domain.Platform;
-using DomainPlatformFamily = Domain.PlatformFamily;
+using DomainPlatform = Domain.Entities.Platform;
+using DomainPlatformFamily = Domain.Entities.PlatformFamily;
 
 namespace Persistence.Seeders
 {
