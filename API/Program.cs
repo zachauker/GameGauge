@@ -28,10 +28,12 @@ try
 {
     var context = services.GetRequiredService<DataContext>();
     await context.Database.MigrateAsync();
+    await AgeRatingSeed.SeedData(context);
     await EngineSeed.SeedData(context);
     await GenreSeed.SeedData(context);
     await PlatformSeed.SeedData(context);
     await GameSeed.SeedData(context);
+    await ReleaseDateSeed.SeedData(context);
 }
 catch (Exception e)
 {

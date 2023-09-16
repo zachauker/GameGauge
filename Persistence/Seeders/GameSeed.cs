@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using IGDB;
-using IGDB.Models;
 using ApiGame = IGDB.Models.Game;
 using DomainGame = Domain.Entities.Game;
 
@@ -39,7 +38,7 @@ namespace Persistence.Seeders
         {
             var query = $"""
                          
-                                         fields *,platforms.*,genres.*,game_engines.*; 
+                                         fields *,platforms.*,genres.*,game_engines.*,age_ratings.*; 
                                          sort first_release_date desc;
                                          limit {limit};
                                          offset {offset};
@@ -64,7 +63,7 @@ namespace Persistence.Seeders
                     StoryLine = apiGame.Storyline,
                     ReleaseDate = apiGame.FirstReleaseDate,
                 };
-
+                
                 if (apiGame.Platforms != null)
                 {
                     foreach (var apiPlatform in apiGame.Platforms.Values)
@@ -92,7 +91,7 @@ namespace Persistence.Seeders
                     }
                 }
 
-                if (apiGame.Genres != null)
+                if (apiGame.GameEngines != null)
                 {
                     foreach (var apiEngine in apiGame.GameEngines.Values)
                     {
@@ -101,6 +100,19 @@ namespace Persistence.Seeders
                         if (matchingEngine != null)
                         {
                             myGame.Engines.Add(matchingEngine);
+                        }
+                    }
+                }
+
+                if (apiGame.AgeRatings != null)
+                {
+                    foreach (var apiRating in apiGame.AgeRatings.Values)
+                    {
+                        var matchingRating = context.AgeRatings.FirstOrDefault(rating => rating.IgdbId == apiRating.Id);
+
+                        if (matchingRating != null)
+                        {
+                            myGame.AgeRatings.Add(matchingRating);
                         }
                     }
                 }

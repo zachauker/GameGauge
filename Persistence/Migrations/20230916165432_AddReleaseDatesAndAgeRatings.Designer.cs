@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Persistence;
 
@@ -10,9 +11,11 @@ using Persistence;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20230916165432_AddReleaseDatesAndAgeRatings")]
+    partial class AddReleaseDatesAndAgeRatings
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "7.0.10");
@@ -100,6 +103,9 @@ namespace Persistence.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("TEXT");
 
+                    b.Property<Guid?>("GameId")
+                        .HasColumnType("TEXT");
+
                     b.Property<long?>("IgdbId")
                         .HasColumnType("INTEGER");
 
@@ -110,6 +116,8 @@ namespace Persistence.Migrations
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("GameId");
 
                     b.ToTable("Engines");
                 });
@@ -261,21 +269,6 @@ namespace Persistence.Migrations
                     b.ToTable("ReleaseDates");
                 });
 
-            modelBuilder.Entity("EngineGame", b =>
-                {
-                    b.Property<Guid>("EnginesId")
-                        .HasColumnType("TEXT");
-
-                    b.Property<Guid>("GamesId")
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("EnginesId", "GamesId");
-
-                    b.HasIndex("GamesId");
-
-                    b.ToTable("EngineGame");
-                });
-
             modelBuilder.Entity("GameGenre", b =>
                 {
                     b.Property<Guid>("GamesId")
@@ -337,6 +330,13 @@ namespace Persistence.Migrations
                     b.Navigation("Parent");
                 });
 
+            modelBuilder.Entity("Domain.Entities.Engine", b =>
+                {
+                    b.HasOne("Domain.Entities.Game", null)
+                        .WithMany("Engines")
+                        .HasForeignKey("GameId");
+                });
+
             modelBuilder.Entity("Domain.Entities.Platform", b =>
                 {
                     b.HasOne("Domain.Entities.Engine", null)
@@ -363,21 +363,6 @@ namespace Persistence.Migrations
                     b.Navigation("Game");
 
                     b.Navigation("Platform");
-                });
-
-            modelBuilder.Entity("EngineGame", b =>
-                {
-                    b.HasOne("Domain.Entities.Engine", null)
-                        .WithMany()
-                        .HasForeignKey("EnginesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Domain.Entities.Game", null)
-                        .WithMany()
-                        .HasForeignKey("GamesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("GameGenre", b =>
@@ -418,6 +403,8 @@ namespace Persistence.Migrations
             modelBuilder.Entity("Domain.Entities.Game", b =>
                 {
                     b.Navigation("AgeRatings");
+
+                    b.Navigation("Engines");
                 });
 #pragma warning restore 612, 618
         }

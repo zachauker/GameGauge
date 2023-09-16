@@ -14,4 +14,7 @@ public class DataContext: DbContext
     public DbSet<PlatformFamily> PlatformFamilies { get; set; }
     public DbSet<Genre> Genres { get; set; }
     public DbSet<Engine> Engines { get; set; }
+    public DbSet<AgeRating> AgeRatings { get; set; }
+    public DbSet<ReleaseDate> ReleaseDates { get; set; }
+    
 }

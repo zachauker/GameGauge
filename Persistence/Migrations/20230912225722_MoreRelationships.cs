@@ -39,7 +39,8 @@ namespace Persistence.Migrations
                 columns: table => new
                 {
                     CompaniesId = table.Column<Guid>(type: "TEXT", nullable: false),
-                    GamesId = table.Column<Guid>(type: "TEXT", nullable: false)
+                    GamesId = table.Column<Guid>(type: "TEXT", nullable: false),
+                    Type = table.Column<string>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -56,14 +57,6 @@ namespace Persistence.Migrations
                         principalTable: "Games",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                    migrationBuilder.AddColumn<string>(
-                        name: "Type",
-                        table: "CompanyGame",
-                        type: "TEXT",
-                        nullable: true
-                    );
-                    
-                    
                 });
 
             migrationBuilder.CreateIndex(

@@ -17,5 +17,6 @@ public class Game
     public List<Genre> Genres { get; set; } = new();
     public List<Engine> Engines { get; set; } = new();
     public List<Company> Companies { get; set; } = new();
+    public List<AgeRating> AgeRatings { get; set; } = new();
 
 }
