@@ -14,4 +14,10 @@ public class GamesController : BaseApiController
     {
         return await Mediator.Send(new List.Query());
     }
+
+    [HttpGet("{id}")]
+    public async Task<ActionResult<Game>> GetGame(Guid id)
+    {
+        return await Mediator.Send(new Details.Query{Id = id});
+    }
 }

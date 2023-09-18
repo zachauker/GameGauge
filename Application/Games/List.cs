@@ -20,7 +20,7 @@ public class List
         
         public async Task<List<Game>> Handle(Query request, CancellationToken cancellationToken)
         {
-            return await _context.Games.ToListAsync();
+            return await _context.Games.ToListAsync(cancellationToken: cancellationToken);
         }
 
     }
