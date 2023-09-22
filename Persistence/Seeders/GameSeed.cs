@@ -15,7 +15,7 @@ namespace Persistence.Seeders
         {
             if (context.Games.Any()) return;
 
-            const int limit = 100;
+            const int limit = 250;
             var offset = 0;
 
             // var igdb = new IGDBClient(

@@ -16,5 +16,6 @@ public class DataContext: DbContext
     public DbSet<Engine> Engines { get; set; }
     public DbSet<AgeRating> AgeRatings { get; set; }
     public DbSet<ReleaseDate> ReleaseDates { get; set; }
+    public DbSet<Company> Companies { get; set; }
     
 }
