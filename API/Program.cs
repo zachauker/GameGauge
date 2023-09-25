@@ -1,4 +1,7 @@
+using API.Extensions;
 using Application.Games;
+using Domain.Entities;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
 using Persistence.Seeders;
@@ -8,6 +11,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddControllers();
+builder.Services.AddIdentityServices(builder.Configuration);
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -32,7 +36,9 @@ var services = scope.ServiceProvider;
 try
 {
     var context = services.GetRequiredService<DataContext>();
+    var userManager = services.GetRequiredService<UserManager<AppUser>>();
     await context.Database.MigrateAsync();
+    await UserSeed.SeedData(context, userManager);
     await AgeRatingSeed.SeedData(context);
     await EngineSeed.SeedData(context);
     await GenreSeed.SeedData(context);
@@ -44,7 +50,6 @@ catch (Exception e)
 {
     var logger = services.GetRequiredService<ILogger<Program>>();
     logger.LogError(e, "Error during migration!");
-    throw;
 }
 
 app.Run();
