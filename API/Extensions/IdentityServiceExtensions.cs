@@ -1,4 +1,5 @@
 
+using API.Services;
 using Domain.Entities;
 using Persistence;
 
@@ -12,6 +13,7 @@ namespace API.Extensions
             services.AddIdentityCore<AppUser>().AddEntityFrameworkStores<DataContext>();
 
             services.AddAuthentication();
+            services.AddScoped<TokenService>();
 
             return services;
         }

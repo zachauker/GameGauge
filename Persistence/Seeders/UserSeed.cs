@@ -17,7 +17,7 @@ public class UserSeed
 
             foreach (var user in users)
             {
-                await userManager.CreateAsync(user, "password");
+                await userManager.CreateAsync(user, "PennState2019!");
             }
         }
     }
