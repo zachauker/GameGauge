@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Xunit;
 
-namespace API.Tests;
+namespace API.Tests.Endpoints;
 
 public class CompanyEndpointTests : IDisposable
 {
