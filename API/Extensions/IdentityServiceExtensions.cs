@@ -12,7 +12,10 @@ namespace API.Extensions
         public static IServiceCollection AddIdentityServices(this IServiceCollection services,
             IConfiguration configuration)
         {
-            services.AddIdentityCore<AppUser>().AddEntityFrameworkStores<DataContext>();
+            services.AddIdentityCore<AppUser>(opt =>
+            {
+                opt.User.RequireUniqueEmail = true;
+            }).AddEntityFrameworkStores<DataContext>();
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["GetToken"] ?? throw new InvalidOperationException()));
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
