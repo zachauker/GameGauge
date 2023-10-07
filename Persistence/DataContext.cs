@@ -11,16 +11,6 @@ public class DataContext : IdentityDbContext<AppUser>
     {
     }
 
-    public DbSet<Game> Games { get; set; }
-    public DbSet<Platform> Platforms { get; set; }
-    public DbSet<PlatformFamily> PlatformFamilies { get; set; }
-    public DbSet<Genre> Genres { get; set; }
-    public DbSet<Engine> Engines { get; set; }
-    public DbSet<AgeRating> AgeRatings { get; set; }
-    public DbSet<ReleaseDate> ReleaseDates { get; set; }
-    public DbSet<Company> Companies { get; set; }
-    public DbSet<GameList> GameLists { get; set; }
-
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -37,4 +27,14 @@ public class DataContext : IdentityDbContext<AppUser>
             .IsRequired()
             .ValueGeneratedOnAddOrUpdate();
     }
+
+    public DbSet<Game> Games { get; set; }
+    public DbSet<Platform> Platforms { get; set; }
+    public DbSet<PlatformFamily> PlatformFamilies { get; set; }
+    public DbSet<Genre> Genres { get; set; }
+    public DbSet<Engine> Engines { get; set; }
+    public DbSet<AgeRating> AgeRatings { get; set; }
+    public DbSet<ReleaseDate> ReleaseDates { get; set; }
+    public DbSet<Company> Companies { get; set; }
+    public DbSet<GameList> GameLists { get; set; }
 }
