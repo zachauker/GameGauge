@@ -1,6 +1,8 @@
+using Domain.Attributes;
 using Domain.Entities;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace Persistence;
 
@@ -15,17 +17,20 @@ public class DataContext : IdentityDbContext<AppUser>
     {
         base.OnModelCreating(modelBuilder);
 
-        modelBuilder.Entity<EntityBase>()
-            .Property(e => e.CreatedAt)
-            .HasColumnType("timestamp")
-            .IsRequired()
-            .ValueGeneratedOnAdd();
+        foreach (var entityType in modelBuilder.Model.GetEntityTypes())
+        {
+            var properties = entityType.ClrType.GetProperties()
+                .Where(p => p.GetCustomAttributes(typeof(TimestampAttribute), false).Any());
 
-        modelBuilder.Entity<EntityBase>()
-            .Property(e => e.UpdatedAt)
-            .HasColumnType("timestamp")
-            .IsRequired()
-            .ValueGeneratedOnAddOrUpdate();
+            foreach (var property in properties)
+            {
+                modelBuilder.Entity(entityType.Name)
+                    .Property(property.Name)
+                    .HasColumnType("timestamp")
+                    .IsRequired()
+                    .ValueGeneratedOnAddOrUpdate();
+            }
+        }
     }
 
     public DbSet<Game> Games { get; set; }

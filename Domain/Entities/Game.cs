@@ -1,8 +1,9 @@
 using System.Runtime.InteropServices.JavaScript;
+using Domain.Attributes;
 
 namespace Domain.Entities;
 
-public class Game : EntityBase
+public class Game
 {
     public Guid Id { get; set; }
     public string Title { get; set; }
@@ -18,5 +19,8 @@ public class Game : EntityBase
     public List<Engine> Engines { get; set; } = new();
     public List<Company> Companies { get; set; } = new();
     public List<AgeRating> AgeRatings { get; set; } = new();
-
+    [Timestamp] 
+    public DateTime CreatedAt { get; set; }
+    [Timestamp] 
+    public DateTime UpdatedAt { get; set; }
 }

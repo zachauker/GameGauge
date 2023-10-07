@@ -1,6 +1,8 @@
+using Domain.Attributes;
+
 namespace Domain.Entities;
 
-public class Platform : EntityBase
+public class Platform
 {
     public Guid Id { get; set; }
     public string Name { get; set; }
@@ -12,4 +14,8 @@ public class Platform : EntityBase
     public string? AlternativeName { get; set; }
     public long? IgdbId { get; set; }
     public List<Game> Games { get; set; } = new();
+    [Timestamp] 
+    public DateTime CreatedAt { get; set; }
+    [Timestamp] 
+    public DateTime UpdatedAt { get; set; }
 }

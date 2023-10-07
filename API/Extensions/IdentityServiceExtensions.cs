@@ -17,7 +17,7 @@ namespace API.Extensions
                 opt.User.RequireUniqueEmail = true;
             }).AddEntityFrameworkStores<DataContext>();
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["GetToken"] ?? throw new InvalidOperationException()));
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["TokenKey"] ?? throw new InvalidOperationException()));
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(opt =>
                 {
