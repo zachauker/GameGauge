@@ -2,7 +2,7 @@ using System.Runtime.InteropServices.JavaScript;
 
 namespace Domain.Entities;
 
-public class Game : BaseEntity
+public class Game : EntityBase
 {
     public Guid Id { get; set; }
     public string Title { get; set; }

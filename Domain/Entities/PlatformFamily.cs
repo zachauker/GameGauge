@@ -1,6 +1,6 @@
 namespace Domain.Entities;
 
-public class PlatformFamily
+public class PlatformFamily : EntityBase
 {
     public Guid Id { get; set; }
     public string Name { get; set; }

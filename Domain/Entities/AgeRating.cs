@@ -1,6 +1,6 @@
 namespace Domain.Entities
 {
-    public class AgeRating
+    public class AgeRating : EntityBase
     {
         public Guid Id { get; set; }
         public string? Category { get; set; }

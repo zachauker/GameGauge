@@ -1,6 +1,6 @@
 namespace Domain.Entities;
 
-public class Company
+public class Company : EntityBase
 {
     public Guid Id { get; set; }
     public string Name { get; set; }

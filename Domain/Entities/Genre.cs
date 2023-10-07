@@ -1,6 +1,6 @@
 namespace Domain.Entities;
 
-public class Genre
+public class Genre : EntityBase
 {
     public Guid Id { get; set; }
     public string Name { get; set; }

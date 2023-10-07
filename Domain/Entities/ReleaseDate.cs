@@ -1,6 +1,6 @@
 namespace Domain.Entities;
 
-public class ReleaseDate
+public class ReleaseDate : EntityBase
 {
     public Guid Id { get; set; }
     public Game Game { get; set; }

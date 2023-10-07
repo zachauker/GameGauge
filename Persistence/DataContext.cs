@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Persistence;
 
-public class DataContext: DbContext
+public class DataContext : DbContext
 {
     public DataContext(DbContextOptions options) : base(options)
     {
@@ -18,5 +18,21 @@ public class DataContext: DbContext
     public DbSet<ReleaseDate> ReleaseDates { get; set; }
     public DbSet<Company> Companies { get; set; }
     public DbSet<GameList> GameLists { get; set; }
-    
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        base.OnModelCreating(modelBuilder);
+
+        modelBuilder.Entity<EntityBase>()
+            .Property(e => e.CreatedAt)
+            .HasColumnType("timestamp")
+            .IsRequired()
+            .ValueGeneratedOnAdd();
+
+        modelBuilder.Entity<EntityBase>()
+            .Property(e => e.UpdatedAt)
+            .HasColumnType("timestamp")
+            .IsRequired()
+            .ValueGeneratedOnAddOrUpdate();
+    }
 }

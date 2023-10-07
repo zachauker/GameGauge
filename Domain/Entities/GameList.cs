@@ -1,6 +1,6 @@
 namespace Domain.Entities;
 
-public class GameList
+public class GameList : EntityBase
 {
     public Guid Id { get; set; }
     public string Title { get; set; }
