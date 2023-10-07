@@ -6,15 +6,15 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Xunit;
 
-namespace API.Tests;
+namespace API.Tests.Endpoints;
 
-public sealed class GenreEndpointTests : IDisposable
+public class PlatformFamilyEndpointTests : IDisposable
 {
     private readonly HttpClient _httpClient;
     private bool _disposed = false;
 
 
-    public GenreEndpointTests()
+    public PlatformFamilyEndpointTests()
     {
         // Set up an HttpClient for testing your API.
         _httpClient = new HttpClient
@@ -24,7 +24,7 @@ public sealed class GenreEndpointTests : IDisposable
     }
 
 
-    private void Dispose(bool disposing)
+    protected virtual void Dispose(bool disposing)
     {
         if (_disposed) return;
         if (disposing)
@@ -45,10 +45,8 @@ public sealed class GenreEndpointTests : IDisposable
     [Fact]
     public async Task GetEndpoint_ShouldReturnOk()
     {
-        // Arrange: Set up any necessary test data or conditions.
 
-        // Act: Make a GET request to your API endpoint.
-        var response = await _httpClient.GetAsync("/api/genres"); // Replace with your endpoint URL.
+        var response = await _httpClient.GetAsync("/api/platformfamilies"); // Replace with your endpoint URL.
 
         // Assert: Verify the response.
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
@@ -58,8 +56,8 @@ public sealed class GenreEndpointTests : IDisposable
     public async Task DetailsEndpoint_ShouldReturnOk()
     {
         // Random game entity Guid
-        const string id = "2070BC89-D753-4BBF-8025-6B07DE327165";
-        var response = await _httpClient.GetAsync($"/api/genres/{id}");
+        const string id = "70900EDC-427D-4F31-8A72-0A4615E3061B";
+        var response = await _httpClient.GetAsync($"/api/platformfamilies/{id}");
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
     }
