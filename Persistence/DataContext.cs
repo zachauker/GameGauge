@@ -24,11 +24,23 @@ public class DataContext : IdentityDbContext<AppUser>
 
             foreach (var property in properties)
             {
-                modelBuilder.Entity(entityType.Name)
-                    .Property(property.Name)
-                    .HasColumnType("timestamp")
-                    .IsRequired()
-                    .ValueGeneratedOnAddOrUpdate();
+                switch (property.Name)
+                {
+                    case "CreatedAt":
+                        modelBuilder.Entity(entityType.Name)
+                            .Property(property.Name)
+                            .HasColumnType("timestamp")
+                            .IsRequired()
+                            .ValueGeneratedOnAdd();
+                        break;
+                    case "UpdatedAt":
+                        modelBuilder.Entity(entityType.Name)
+                            .Property(property.Name)
+                            .HasColumnType("timestamp")
+                            .IsRequired()
+                            .ValueGeneratedOnAddOrUpdate();
+                        break;
+                }
             }
         }
     }

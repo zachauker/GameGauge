@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using Application.GameLists;
 using Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
@@ -22,6 +23,23 @@ public class GameListController : BaseApiController
     {
         await Mediator.Send(new Create.Command { GameList = gameList });
         
+        return Ok();
+    }
+
+    [HttpPut( "{id:guid}")]
+    public async Task<IActionResult> EditGameList(Guid id, GameList gameList)
+    {
+        gameList.Id = id;
+        await Mediator.Send(new Edit.Command { GameList = gameList });
+        
+        return Ok();
+    }
+
+    [HttpDelete("{id:guid}")]
+    public async Task<IActionResult> Delete(Guid id)
+    {
+        await Mediator.Send(new Delete.Command { Id = id });
+
         return Ok();
     }
 }
