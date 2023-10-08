@@ -22,6 +22,7 @@ public class Create
 
         public async Task Handle(Command request, CancellationToken cancellationToken)
         {
+            
             _context.GameLists.Add(request.GameList);
 
             await _context.SaveChangesAsync(cancellationToken);

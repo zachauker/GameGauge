@@ -22,8 +22,9 @@ public class Details
         
         public async Task<GameList> Handle(Query request, CancellationToken cancellationToken)
         {
-            return await _context.GameLists.FindAsync(new object[] { request.Id }, cancellationToken: cancellationToken);
-        }
+            var gameList = await _context.GameLists.FindAsync(new object[] { request.Id }, cancellationToken: cancellationToken);
 
+            return gameList;
+        }
     }
 }
