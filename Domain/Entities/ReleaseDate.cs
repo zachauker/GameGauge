@@ -1,3 +1,5 @@
+using Domain.Attributes;
+
 namespace Domain.Entities;
 
 public class ReleaseDate
@@ -8,4 +10,8 @@ public class ReleaseDate
     public long? IgdbId { get; set; }
     public DateTimeOffset? Date { get; set; }
     public string ReadableDate { get; set; }
+    [Timestamp] 
+    public DateTime CreatedAt { get; set; }
+    [Timestamp]
+    public DateTime UpdatedAt { get; set; }
 }

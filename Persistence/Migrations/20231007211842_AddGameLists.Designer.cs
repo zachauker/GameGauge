@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Persistence;
 
@@ -10,9 +11,11 @@ using Persistence;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20231007211842_AddGameLists")]
+    partial class AddGameLists
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "7.0.11");
@@ -41,10 +44,6 @@ namespace Persistence.Migrations
                     b.Property<string>("Category")
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp");
-
                     b.Property<Guid?>("GameId")
                         .HasColumnType("TEXT");
 
@@ -53,10 +52,6 @@ namespace Persistence.Migrations
 
                     b.Property<string>("Synopsis")
                         .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("timestamp");
 
                     b.HasKey("Id");
 
@@ -144,10 +139,6 @@ namespace Persistence.Migrations
                     b.Property<string>("Country")
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp");
-
                     b.Property<string>("Description")
                         .HasColumnType("TEXT");
 
@@ -166,10 +157,6 @@ namespace Persistence.Migrations
                     b.Property<string>("Slug")
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime>("UpdatedAt")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("timestamp");
-
                     b.Property<string>("Url")
                         .HasColumnType("TEXT");
 
@@ -186,10 +173,6 @@ namespace Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp");
-
                     b.Property<string>("Description")
                         .HasColumnType("TEXT");
 
@@ -202,10 +185,6 @@ namespace Persistence.Migrations
                     b.Property<string>("Slug")
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime>("UpdatedAt")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("timestamp");
-
                     b.HasKey("Id");
 
                     b.ToTable("Engines");
@@ -217,11 +196,10 @@ namespace Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp");
-
                     b.Property<string>("Description")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid?>("GameListId")
                         .HasColumnType("TEXT");
 
                     b.Property<long?>("IgdbId")
@@ -245,11 +223,9 @@ namespace Persistence.Migrations
                     b.Property<string>("Title")
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime>("UpdatedAt")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("timestamp");
-
                     b.HasKey("Id");
+
+                    b.HasIndex("GameListId");
 
                     b.ToTable("Games");
                 });
@@ -260,19 +236,11 @@ namespace Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp");
-
                     b.Property<string>("Description")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Title")
                         .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("timestamp");
 
                     b.HasKey("Id");
 
@@ -285,10 +253,6 @@ namespace Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp");
-
                     b.Property<long?>("IgdbId")
                         .HasColumnType("INTEGER");
 
@@ -297,10 +261,6 @@ namespace Persistence.Migrations
 
                     b.Property<string>("Slug")
                         .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("timestamp");
 
                     b.HasKey("Id");
 
@@ -318,10 +278,6 @@ namespace Persistence.Migrations
 
                     b.Property<string>("AlternativeName")
                         .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp");
 
                     b.Property<Guid?>("EngineId")
                         .HasColumnType("TEXT");
@@ -344,10 +300,6 @@ namespace Persistence.Migrations
                     b.Property<string>("Summary")
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime>("UpdatedAt")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("timestamp");
-
                     b.HasKey("Id");
 
                     b.HasIndex("EngineId");
@@ -363,10 +315,6 @@ namespace Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp");
-
                     b.Property<long?>("IgdbId")
                         .HasColumnType("INTEGER");
 
@@ -375,10 +323,6 @@ namespace Persistence.Migrations
 
                     b.Property<string>("Slug")
                         .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("timestamp");
 
                     b.HasKey("Id");
 
@@ -390,10 +334,6 @@ namespace Persistence.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp");
 
                     b.Property<DateTimeOffset?>("Date")
                         .HasColumnType("TEXT");
@@ -409,10 +349,6 @@ namespace Persistence.Migrations
 
                     b.Property<string>("ReadableDate")
                         .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("timestamp");
 
                     b.HasKey("Id");
 
@@ -436,21 +372,6 @@ namespace Persistence.Migrations
                     b.HasIndex("GamesId");
 
                     b.ToTable("EngineGame");
-                });
-
-            modelBuilder.Entity("GameGameList", b =>
-                {
-                    b.Property<Guid>("GameListsId")
-                        .HasColumnType("TEXT");
-
-                    b.Property<Guid>("GamesId")
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("GameListsId", "GamesId");
-
-                    b.HasIndex("GamesId");
-
-                    b.ToTable("GameGameList");
                 });
 
             modelBuilder.Entity("GameGenre", b =>
@@ -642,6 +563,13 @@ namespace Persistence.Migrations
                     b.Navigation("Parent");
                 });
 
+            modelBuilder.Entity("Domain.Entities.Game", b =>
+                {
+                    b.HasOne("Domain.Entities.GameList", null)
+                        .WithMany("Games")
+                        .HasForeignKey("GameListId");
+                });
+
             modelBuilder.Entity("Domain.Entities.Platform", b =>
                 {
                     b.HasOne("Domain.Entities.Engine", null)
@@ -675,21 +603,6 @@ namespace Persistence.Migrations
                     b.HasOne("Domain.Entities.Engine", null)
                         .WithMany()
                         .HasForeignKey("EnginesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Domain.Entities.Game", null)
-                        .WithMany()
-                        .HasForeignKey("GamesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("GameGameList", b =>
-                {
-                    b.HasOne("Domain.Entities.GameList", null)
-                        .WithMany()
-                        .HasForeignKey("GameListsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -789,6 +702,11 @@ namespace Persistence.Migrations
             modelBuilder.Entity("Domain.Entities.Game", b =>
                 {
                     b.Navigation("AgeRatings");
+                });
+
+            modelBuilder.Entity("Domain.Entities.GameList", b =>
+                {
+                    b.Navigation("Games");
                 });
 #pragma warning restore 612, 618
         }

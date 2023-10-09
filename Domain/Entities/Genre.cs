@@ -1,3 +1,5 @@
+using Domain.Attributes;
+
 namespace Domain.Entities;
 
 public class Genre
@@ -7,4 +9,8 @@ public class Genre
     public string Slug { get; set; }
     public long? IgdbId { get; set; }
     public List<Game> Games { get; set; }
+    [Timestamp] 
+    public DateTime CreatedAt { get; set; }
+    [Timestamp]
+    public DateTime UpdatedAt { get; set; }
 }

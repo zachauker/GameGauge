@@ -6,15 +6,15 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Xunit;
 
-namespace API.Tests;
+namespace API.Tests.Endpoints;
 
-public class CompanyEndpointTests : IDisposable
+public class PlatformEndpointTests : IDisposable
 {
     private readonly HttpClient _httpClient;
     private bool _disposed = false;
 
 
-    public CompanyEndpointTests()
+    public PlatformEndpointTests()
     {
         // Set up an HttpClient for testing your API.
         _httpClient = new HttpClient
@@ -48,7 +48,7 @@ public class CompanyEndpointTests : IDisposable
         // Arrange: Set up any necessary test data or conditions.
 
         // Act: Make a GET request to your API endpoint.
-        var response = await _httpClient.GetAsync("/api/companies"); // Replace with your endpoint URL.
+        var response = await _httpClient.GetAsync("/api/platforms"); // Replace with your endpoint URL.
 
         // Assert: Verify the response.
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
@@ -57,9 +57,9 @@ public class CompanyEndpointTests : IDisposable
     [Fact]
     public async Task DetailsEndpoint_ShouldReturnOk()
     {
-        // Random company entity Guid
-        const string id = "DEDFE9B9-4924-4431-884A-277B66AAF406";
-        var response = await _httpClient.GetAsync($"/api/companies/{id}");
+        // Random platform entity Guid
+        const string id = "5111D33E-33BE-4B9D-856A-A2D6D3E9EA0D";
+        var response = await _httpClient.GetAsync($"/api/platforms/{id}");
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
     }

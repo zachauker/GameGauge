@@ -6,15 +6,15 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Xunit;
 
-namespace API.Tests;
+namespace API.Tests.Endpoints;
 
-public class PlatformFamilyEndpointTests : IDisposable
+public class CompanyEndpointTests : IDisposable
 {
     private readonly HttpClient _httpClient;
     private bool _disposed = false;
 
 
-    public PlatformFamilyEndpointTests()
+    public CompanyEndpointTests()
     {
         // Set up an HttpClient for testing your API.
         _httpClient = new HttpClient
@@ -45,8 +45,10 @@ public class PlatformFamilyEndpointTests : IDisposable
     [Fact]
     public async Task GetEndpoint_ShouldReturnOk()
     {
+        // Arrange: Set up any necessary test data or conditions.
 
-        var response = await _httpClient.GetAsync("/api/platformfamilies"); // Replace with your endpoint URL.
+        // Act: Make a GET request to your API endpoint.
+        var response = await _httpClient.GetAsync("/api/companies"); // Replace with your endpoint URL.
 
         // Assert: Verify the response.
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
@@ -55,9 +57,9 @@ public class PlatformFamilyEndpointTests : IDisposable
     [Fact]
     public async Task DetailsEndpoint_ShouldReturnOk()
     {
-        // Random game entity Guid
-        const string id = "70900EDC-427D-4F31-8A72-0A4615E3061B";
-        var response = await _httpClient.GetAsync($"/api/platformfamilies/{id}");
+        // Random company entity Guid
+        const string id = "DEDFE9B9-4924-4431-884A-277B66AAF406";
+        var response = await _httpClient.GetAsync($"/api/companies/{id}");
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
     }

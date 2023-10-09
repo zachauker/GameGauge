@@ -1,3 +1,5 @@
+using Domain.Attributes;
+
 namespace Domain.Entities;
 
 public class Company
@@ -12,4 +14,8 @@ public class Company
     public List<Game> Games { get; set; }
     public string Url { get; set; }
     public DateTimeOffset? FoundedDate { get; set; }
+    [Timestamp] 
+    public DateTime CreatedAt { get; set; }
+    [Timestamp]
+    public DateTime UpdatedAt { get; set; }
 }
