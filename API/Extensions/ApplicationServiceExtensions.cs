@@ -1,5 +1,7 @@
 using Application.Games;
 using Application.Core;
+using Application.Interfaces;
+using Infrastructure.Security;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
 
@@ -20,6 +22,8 @@ public static class ApplicationServiceExtensions
         services.AddCoreAdmin();
         services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(List.Handler).Assembly));
         services.AddAutoMapper(typeof(MappingProfiles).Assembly);
+        services.AddHttpContextAccessor();
+        services.AddScoped<IUserAccessor, UserAccessor>();
 
         return services;
     }

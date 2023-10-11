@@ -11,6 +11,16 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddApplicationServices(builder.Configuration);
 
+
+var  myAllowSpecificOrigins = "_myAllowSpecificOrigins";
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: myAllowSpecificOrigins,
+                      policy  =>
+                      {
+                          policy.WithOrigins("http://localhost:3000");
+                      });
+});
 var app = builder.Build();
 
 app.UseStaticFiles();
@@ -19,6 +29,7 @@ app.UseAuthorization();
 
 app.MapControllers();
 app.MapDefaultControllerRoute();
+app.UseCors(myAllowSpecificOrigins);
 
 using var scope = app.Services.CreateScope();
 var services = scope.ServiceProvider;

@@ -15,7 +15,7 @@ public class GameListsController : BaseApiController
     }
 
     [HttpGet("{id:guid}")]
-    public async Task<ActionResult<GameList>> GetGameList(Guid id)
+    public async Task<ActionResult<GameListDto>> GetGameList(Guid id)
     {
         return await Mediator.Send(new Details.Query { Id = id });
     }

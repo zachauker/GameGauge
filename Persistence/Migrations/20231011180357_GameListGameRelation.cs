@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Persistence.Migrations
 {
     /// <inheritdoc />
-    public partial class GameListRelationship : Migration
+    public partial class GameListGameRelation : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -23,43 +23,73 @@ namespace Persistence.Migrations
                 name: "GameListId",
                 table: "Games");
 
+            migrationBuilder.AddColumn<string>(
+                name: "UserId",
+                table: "GameLists",
+                type: "TEXT",
+                nullable: true);
+
             migrationBuilder.CreateTable(
                 name: "GameListGames",
                 columns: table => new
                 {
-                    GameListsId = table.Column<Guid>(type: "TEXT", nullable: false),
-                    GamesId = table.Column<Guid>(type: "TEXT", nullable: false),
+                    GameListId = table.Column<Guid>(type: "TEXT", nullable: false),
+                    GameId = table.Column<Guid>(type: "TEXT", nullable: false),
                     Position = table.Column<int>(type: "INTEGER", nullable: false),
-                    DateAdded = table.Column<DateTime>(type: "timestamp", nullable: false, defaultValue: DateTime.UtcNow)
+                    DateAdded = table.Column<DateTime>(type: "TEXT", nullable: false, defaultValue: DateTime.UtcNow)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_GameListGames", x => new { x.GameListsId, x.GamesId });
+                    table.PrimaryKey("PK_GameListGames", x => new { x.GameListId, x.GameId });
                     table.ForeignKey(
-                        name: "FK_GameListGames_GameLists_GameListsId",
-                        column: x => x.GameListsId,
+                        name: "FK_GameListGames_GameLists_GameListId",
+                        column: x => x.GameListId,
                         principalTable: "GameLists",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_GameListGames_Games_GamesId",
-                        column: x => x.GamesId,
+                        name: "FK_GameListGames_Games_GameId",
+                        column: x => x.GameId,
                         principalTable: "Games",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_GameListGames_GamesId",
+                name: "IX_GameLists_UserId",
+                table: "GameLists",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_GameListGames_GameId",
                 table: "GameListGames",
-                column: "GamesId");
+                column: "GameId");
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_GameLists_AspNetUsers_UserId",
+                table: "GameLists",
+                column: "UserId",
+                principalTable: "AspNetUsers",
+                principalColumn: "Id");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropForeignKey(
+                name: "FK_GameLists_AspNetUsers_UserId",
+                table: "GameLists");
+
             migrationBuilder.DropTable(
-                name: "GameGameList");
+                name: "GameListGames");
+
+            migrationBuilder.DropIndex(
+                name: "IX_GameLists_UserId",
+                table: "GameLists");
+
+            migrationBuilder.DropColumn(
+                name: "UserId",
+                table: "GameLists");
 
             migrationBuilder.AddColumn<Guid>(
                 name: "GameListId",

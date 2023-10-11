@@ -19,6 +19,18 @@ public class DataContext : IdentityDbContext<AppUser>
 
         foreach (var entityType in modelBuilder.Model.GetEntityTypes())
         {
+            modelBuilder.Entity<GameListGame>(x => x.HasKey(glg => new { glg.GameListId, glg.GameId }));
+
+            modelBuilder.Entity<GameListGame>()
+                .HasOne(gl => gl.GameList)
+                .WithMany(g => g.ListGames)
+                .HasForeignKey(glg => glg.GameListId);
+            
+            modelBuilder.Entity<GameListGame>()
+                .HasOne(gl => gl.Game)
+                .WithMany(g => g.GameLists)
+                .HasForeignKey(glg => glg.GameId);
+            
             var properties = entityType.ClrType.GetProperties()
                 .Where(p => p.GetCustomAttributes(typeof(TimestampAttribute), false).Any());
 
@@ -54,4 +66,5 @@ public class DataContext : IdentityDbContext<AppUser>
     public DbSet<ReleaseDate> ReleaseDates { get; set; }
     public DbSet<Company> Companies { get; set; }
     public DbSet<GameList> GameLists { get; set; }
+    public DbSet<GameListGame> GameListGames { get; set; }
 }

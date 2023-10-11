@@ -19,7 +19,7 @@ public class Game
     public List<Engine> Engines { get; set; } = new();
     public List<Company> Companies { get; set; } = new();
     public List<AgeRating> AgeRatings { get; set; } = new();
-    public List<GameList> GameLists { get; set; } = new();
+    public ICollection<GameListGame> GameLists { get; set; }
     [Timestamp] 
     public DateTime CreatedAt { get; set; }
     [Timestamp] 

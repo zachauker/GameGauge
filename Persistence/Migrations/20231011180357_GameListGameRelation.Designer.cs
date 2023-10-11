@@ -11,8 +11,8 @@ using Persistence;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20231008133006_GameListRelationship")]
-    partial class GameListRelationship
+    [Migration("20231011180357_GameListGameRelation")]
+    partial class GameListGameRelation
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -277,9 +277,35 @@ namespace Persistence.Migrations
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("timestamp");
 
+                    b.Property<string>("UserId")
+                        .HasColumnType("TEXT");
+
                     b.HasKey("Id");
 
+                    b.HasIndex("UserId");
+
                     b.ToTable("GameLists");
+                });
+
+            modelBuilder.Entity("Domain.Entities.GameListGame", b =>
+                {
+                    b.Property<Guid>("GameListId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("GameId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("DateAdded")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Position")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("GameListId", "GameId");
+
+                    b.HasIndex("GameId");
+
+                    b.ToTable("GameListGames");
                 });
 
             modelBuilder.Entity("Domain.Entities.Genre", b =>
@@ -439,21 +465,6 @@ namespace Persistence.Migrations
                     b.HasIndex("GamesId");
 
                     b.ToTable("EngineGame");
-                });
-
-            modelBuilder.Entity("GameGameList", b =>
-                {
-                    b.Property<Guid>("GameListsId")
-                        .HasColumnType("TEXT");
-
-                    b.Property<Guid>("GamesId")
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("GameListsId", "GamesId");
-
-                    b.HasIndex("GamesId");
-
-                    b.ToTable("GameGameList");
                 });
 
             modelBuilder.Entity("GameGenre", b =>
@@ -645,6 +656,34 @@ namespace Persistence.Migrations
                     b.Navigation("Parent");
                 });
 
+            modelBuilder.Entity("Domain.Entities.GameList", b =>
+                {
+                    b.HasOne("Domain.Entities.AppUser", "User")
+                        .WithMany("UserLists")
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Domain.Entities.GameListGame", b =>
+                {
+                    b.HasOne("Domain.Entities.Game", "Game")
+                        .WithMany("GameLists")
+                        .HasForeignKey("GameId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entities.GameList", "GameList")
+                        .WithMany("ListGames")
+                        .HasForeignKey("GameListId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Game");
+
+                    b.Navigation("GameList");
+                });
+
             modelBuilder.Entity("Domain.Entities.Platform", b =>
                 {
                     b.HasOne("Domain.Entities.Engine", null)
@@ -678,21 +717,6 @@ namespace Persistence.Migrations
                     b.HasOne("Domain.Entities.Engine", null)
                         .WithMany()
                         .HasForeignKey("EnginesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Domain.Entities.Game", null)
-                        .WithMany()
-                        .HasForeignKey("GamesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("GameGameList", b =>
-                {
-                    b.HasOne("Domain.Entities.GameList", null)
-                        .WithMany()
-                        .HasForeignKey("GameListsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -784,6 +808,11 @@ namespace Persistence.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Domain.Entities.AppUser", b =>
+                {
+                    b.Navigation("UserLists");
+                });
+
             modelBuilder.Entity("Domain.Entities.Engine", b =>
                 {
                     b.Navigation("Platforms");
@@ -792,6 +821,13 @@ namespace Persistence.Migrations
             modelBuilder.Entity("Domain.Entities.Game", b =>
                 {
                     b.Navigation("AgeRatings");
+
+                    b.Navigation("GameLists");
+                });
+
+            modelBuilder.Entity("Domain.Entities.GameList", b =>
+                {
+                    b.Navigation("ListGames");
                 });
 #pragma warning restore 612, 618
         }

@@ -1,5 +1,5 @@
 // Composables
-import { createRouter, createWebHistory } from 'vue-router'
+import {createRouter, createWebHistory} from 'vue-router'
 
 const routes = [
   {
@@ -14,8 +14,14 @@ const routes = [
         // which is lazy-loaded when the route is visited.
         component: () => import(/* webpackChunkName: "home" */ '@/views/Home.vue'),
       },
+      {
+        path: 'gamelists/:id',
+        name: 'GameListDetails',
+        component: () => import('@/views/GameLists/GameListDetails.vue')
+      }
     ],
   },
+
 ]
 
 const router = createRouter({
