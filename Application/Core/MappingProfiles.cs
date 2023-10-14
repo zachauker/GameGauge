@@ -12,7 +12,8 @@ public class MappingProfiles : Profile
     {
         CreateMap<GameList, GameList>();
         CreateMap<GameList, GameListDto>()
-            .ForMember(d => d.ListGames, o => o.MapFrom(s => s.ListGames.Select(lg => lg.Game)));
+            .ForMember(d => d.ListGames,
+                o => o.MapFrom(s => s.ListGames.Select(lg => lg.Game)));
         CreateMap<Game, Game>();
         CreateMap<Game, GameDto>()
             .ForMember(d => d.GameLists, o => o.MapFrom(s => s.GameLists));

@@ -7,3 +7,10 @@ export function fetchGameListDetails(gameListId)
     .catch(error => error)
 }
 
+export function createGameList(gameList)
+{
+  return axios.post('http://localhost:5000/api/GameLists', gameList)
+    .then(response => response)
+    .catch(error => error)
+}
+

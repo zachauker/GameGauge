@@ -1,3 +1,4 @@
+using Application;
 using Application.Games;
 using Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
@@ -15,7 +16,12 @@ public class GamesController : BaseApiController
     [HttpGet("{id:guid}")]
     public async Task<ActionResult<Game>> GetGame(Guid id)
     {
-        return await Mediator.Send(new Details.Query{Id = id});
+        return await Mediator.Send(new Details.Query { Id = id });
     }
-    
+
+    [HttpGet("search")]
+    public async Task<ActionResult<PaginatedResult<GameDto>>> SearchGames([FromQuery] Search.Query query)
+    {
+        return await Mediator.Send(query);
+    }
 }

@@ -43,6 +43,7 @@ public class DataContext : IdentityDbContext<AppUser>
                             .Property(property.Name)
                             .HasColumnType("timestamp")
                             .IsRequired()
+                            .HasDefaultValueSql("CURRENT_TIMESTAMP")
                             .ValueGeneratedOnAdd();
                         break;
                     case "UpdatedAt":
@@ -50,6 +51,7 @@ public class DataContext : IdentityDbContext<AppUser>
                             .Property(property.Name)
                             .HasColumnType("timestamp")
                             .IsRequired()
+                            .HasDefaultValueSql("CURRENT_TIMESTAMP")
                             .ValueGeneratedOnAddOrUpdate();
                         break;
                 }

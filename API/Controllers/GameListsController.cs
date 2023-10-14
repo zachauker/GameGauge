@@ -9,23 +9,23 @@ namespace API.Controllers;
 public class GameListsController : BaseApiController
 {
     [HttpGet]
-    public async Task<ActionResult<List<GameList>>> GetGames()
+    public async Task<ActionResult<List<GameList>>> GetGameLists()
     {
         return await Mediator.Send(new List.Query());
     }
 
     [HttpGet("{id:guid}")]
-    public async Task<ActionResult<GameListDto>> GetGameList(Guid id)
+    public async Task<ActionResult<GameListDto>> GetGameListDetails(Guid id)
     {
         return await Mediator.Send(new Details.Query { Id = id });
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateGameList(GameList gameList)
+    public async Task<ActionResult> CreateGameList(GameList gameList)
     {
-        await Mediator.Send(new Create.Command { GameList = gameList });
+        var newList = await Mediator.Send(new Create.Command { GameList = gameList });
 
-        return Ok();
+        return Ok(newList);
     }
 
     [HttpPut("{id:guid}/add")]
