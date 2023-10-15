@@ -1,5 +1,8 @@
 <script setup>
 import userApi from "@/api/UserApi"
+import { useRouter } from "vue-router"
+
+const router = useRouter()
 
 import {ref} from "vue";
 
@@ -16,7 +19,7 @@ const visible = ref(false)
 function register() {
   userApi.registerUser(tempUser.value)
     .then(() => {
-      this.$router.push("/login")
+      router.push("/login")
     })
 }
 

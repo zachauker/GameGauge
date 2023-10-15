@@ -1,5 +1,8 @@
 <script>
-import { createGameList } from '../../store/api/GameListApi'
+import { createGameList } from '../../api/GameListApi'
+import { useRouter } from "vue-router"
+
+const router = useRouter()
 
 export default {
   name: "CreateGameListForm",
@@ -17,7 +20,7 @@ export default {
     submit() {
       createGameList(this.gameList)
           .then(response => {
-            this.$emit('game-list-created', response.data)
+            router.push("/gamelists/" + response.data.id + "/addgames")
           })
     }
   }

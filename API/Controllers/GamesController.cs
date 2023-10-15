@@ -8,13 +8,13 @@ namespace API.Controllers;
 public class GamesController : BaseApiController
 {
     [HttpGet]
-    public async Task<ActionResult<List<Game>>> GetGames()
+    public async Task<ActionResult<PaginatedResult<GameDto>>> ListGames([FromQuery] List.Query query)
     {
-        return await Mediator.Send(new List.Query());
+        return await Mediator.Send(query);
     }
 
     [HttpGet("{id:guid}")]
-    public async Task<ActionResult<Game>> GetGame(Guid id)
+    public async Task<ActionResult<GameDto>> GetGame(Guid id)
     {
         return await Mediator.Send(new Details.Query { Id = id });
     }

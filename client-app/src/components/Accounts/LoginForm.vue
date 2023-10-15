@@ -1,6 +1,9 @@
 <script setup>
 import { useUserStore } from "@/store/user"
 const userStore = useUserStore()
+import { useRouter } from "vue-router"
+
+const router = useRouter()
 
 import {ref} from "vue";
 
@@ -9,8 +12,13 @@ const tempUser = ref({
   "password": null
 })
 
+const valid = ref(false)
+
 function login() {
   userStore.loginUser(tempUser.value)
+      .then(() => {
+        router.push("/")
+      })
 }
 
 </script>

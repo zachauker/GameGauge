@@ -29,7 +29,6 @@ public class Search
         public async Task<PaginatedResult<GameDto>> Handle(Query request, CancellationToken cancellationToken)
         {
             var query = _context.Games.AsQueryable();
-            Console.WriteLine($"Search Term: {request.SearchTerm}"); // Log search term for debugging
 
             if (!string.IsNullOrEmpty(request.SearchTerm))
             {
@@ -43,7 +42,6 @@ public class Search
                 .ToListAsync(cancellationToken);
 
             var totalRecords = await query.CountAsync(cancellationToken);
-            Console.WriteLine($"Count: {totalRecords}"); // Log search term for debugging
 
             var gamesDto = _mapper.Map<List<GameDto>>(games);
 
