@@ -1,5 +1,5 @@
 <script>
-import { fetchGameListDetails } from '../../store/api/GameListApi'
+import { fetchGameListDetails } from '../../api/GameListApi'
 export default {
   name: "GameListDetails",
   data() {
@@ -18,9 +18,7 @@ export default {
 </script>
 
 <template>
-<v-container>
-  
-</v-container>
+
 </template>
 
 <style scoped>

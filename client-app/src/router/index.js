@@ -15,14 +15,24 @@ const routes = [
         component: () => import(/* webpackChunkName: "home" */ '@/views/Home.vue'),
       },
       {
+        path: '/register',
+        name: 'Register',
+        component: () => import('@/views/Accounts/RegisterView.vue')
+      },
+      {
+        path: '/login',
+        name: 'LoginView',
+        component: () => import('@/views/Accounts/LoginView.vue')
+      },
+      {
         path: '/gamelists/:id',
         name: 'GameListDetails',
-        component: () => import('@/views/GameLists/GameListDetails.vue')
+        component: () => import('@/views/GameLists/GameListDetailsView.vue')
       },
       {
         path: '/gamelists/create',
         name: 'CreateGameList',
-        component: () => import('@/views/GameLists/CreateGameList.vue')
+        component: () => import('@/views/GameLists/CreateGameListView.vue')
       }
     ],
   },
