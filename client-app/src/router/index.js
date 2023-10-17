@@ -25,14 +25,29 @@ const routes = [
         component: () => import('@/views/Accounts/LoginView.vue')
       },
       {
+        path: '/account',
+        name: 'AccountView',
+        component: () => import('@/views/Accounts/AccountView.vue')
+      },
+      {
         path: '/gamelists/:id',
         name: 'GameListDetails',
         component: () => import('@/views/GameLists/GameListDetailsView.vue')
       },
       {
+        path: '/gamelists/:/add',
+        name: 'AddGameListGames',
+        component: () => import('@/views/GameLists/AddGameListGamesView.vue')
+      },
+      {
         path: '/gamelists/create',
         name: 'CreateGameList',
         component: () => import('@/views/GameLists/CreateGameListView.vue')
+      },
+      {
+        path: '/games/:slug',
+        name: 'GameDetails',
+        component: () => import('@/views/Games/GameDetailsView')
       }
     ],
   },

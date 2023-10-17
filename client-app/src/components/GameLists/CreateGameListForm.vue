@@ -1,8 +1,5 @@
 <script>
-import { createGameList } from '../../api/GameListApi'
-import { useRouter } from "vue-router"
-
-const router = useRouter()
+import gameListApi from '@/api/GameListApi'
 
 export default {
   name: "CreateGameListForm",
@@ -18,9 +15,9 @@ export default {
 
   methods: {
     submit() {
-      createGameList(this.gameList)
+      gameListApi.createGameList(this.gameList)
           .then(response => {
-            router.push("/gamelists/" + response.data.id + "/addgames")
+            this.$router.push("/gamelists/" + response.data.id + "/add")
           })
     }
   }
@@ -29,17 +26,22 @@ export default {
 
 <template>
   <v-card variant="outlined" max-width="800px">
+    <v-card-title>
+      <v-row align="center" justify="center" class="my-2">
+        <v-col cols="auto">
+          <h3>Create List</h3>
+        </v-col>
+      </v-row>
+    </v-card-title>
     <v-card-text>
-      <v-responsive :aspect-ratio="4/3">
-        <v-form v-model="valid" class="px-4" lazy-validation>
-          <v-row align="center" justify="center" class="my-3">
-            <v-col cols="8">
-              <v-text-field label="List Title" v-model="gameList.title" variant="outlined"></v-text-field>
-              <v-textarea label="Description" v-model="gameList.description" variant="outlined"></v-textarea>
-            </v-col>
-          </v-row>
-        </v-form>
-      </v-responsive>
+      <v-form v-model="valid" class="px-4" lazy-validation>
+        <v-row align="center" justify="center" class="my-3">
+          <v-col cols="8">
+            <v-text-field label="List Title" v-model="gameList.title" variant="outlined"></v-text-field>
+            <v-textarea label="Description" v-model="gameList.description" variant="outlined"></v-textarea>
+          </v-col>
+        </v-row>
+      </v-form>
     </v-card-text>
     <v-card-actions class="justify-center my-2">
       <v-btn color="primary" variant="outlined" @click="submit">Submit</v-btn>

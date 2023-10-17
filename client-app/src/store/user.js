@@ -1,6 +1,5 @@
 // Utilities
 import { defineStore } from 'pinia'
-
 import userApi from "../api/UserApi"
 
 export const useUserStore = defineStore('user', {

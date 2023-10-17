@@ -12,6 +12,16 @@
           <span class="text-h6 nav-link">{{ item.text }}</span>
         </router-link>
       </v-col>
+      <v-col cols="auto">
+        <router-link to="/login">
+          <v-icon color="white">mdi-login</v-icon>
+        </router-link>
+      </v-col>
+      <v-col cols="auto">
+        <router-link to="/account">
+          <v-icon color="white">mdi-account-box-outline</v-icon>
+        </router-link>
+      </v-col>
     </v-row>
   </v-app-bar>
 </template>
@@ -23,7 +33,7 @@ export default {
       navigationItems: [
         {"text": "Home", route: "/"},
         {"text": "About", route: "/about"},
-        {"text": "Contact", route: "/contact"},
+        {"text": "Lists", route: "/gamelists"},
         {"text": "Trending", route: "/trending"}
       ]
     }

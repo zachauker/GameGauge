@@ -1,7 +1,8 @@
 <script setup>
-import { useUserStore } from "@/store/user"
+import {useUserStore} from "@/store/user"
+
 const userStore = useUserStore()
-import { useRouter } from "vue-router"
+import {useRouter} from "vue-router"
 
 const router = useRouter()
 
@@ -13,11 +14,12 @@ const tempUser = ref({
 })
 
 const valid = ref(false)
+const visible = ref(false)
 
 function login() {
   userStore.loginUser(tempUser.value)
       .then(() => {
-        router.push("/")
+        router.push("/account")
       })
 }
 
@@ -25,19 +27,29 @@ function login() {
 
 <template>
   <v-card variant="outlined" max-width="800px">
+    <v-card-title>
+      <v-row align="center" justify="center" class="my-2">
+        <v-col cols="auto">
+          <h3>User Login</h3>
+        </v-col>
+      </v-row>
+    </v-card-title>
     <v-card-text>
-      <v-responsive :aspect-ratio="4/3">
-        <v-form v-model="valid" class="px-4" lazy-validation>
-          <v-row align="center" justify="center" class="my-3">
-            <v-col cols="8">
-              <v-text-field label="Email" v-model="tempUser.email" variant="outlined"></v-text-field>
-              <v-text-field label="Description" v-model="tempUser.password" variant="outlined"></v-text-field>
-            </v-col>
-          </v-row>
-        </v-form>
-      </v-responsive>
+      <v-form v-model="valid" class="px-4" lazy-validation>
+        <v-row align="center" justify="center" class="my-3">
+          <v-col cols="8">
+            <v-text-field label="Email" v-model="tempUser.email" variant="outlined"
+                          prepend-inner-icon="mdi-email-outline"></v-text-field>
+            <v-text-field label="Password" v-model="tempUser.password" variant="outlined"
+                          :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'"
+                          :type="visible ? 'text' : 'password'"
+                          @click:append-inner="visible = !visible"
+                          prepend-inner-icon="mdi-lock-outline"></v-text-field>
+          </v-col>
+        </v-row>
+      </v-form>
     </v-card-text>
-    <v-card-actions class="justify-center my-2">
+    <v-card-actions class="justify-center mb-2">
       <v-btn color="primary" variant="outlined" @click="login">Login</v-btn>
     </v-card-actions>
   </v-card>

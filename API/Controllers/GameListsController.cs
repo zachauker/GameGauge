@@ -1,8 +1,11 @@
 using System.Diagnostics;
 using System.Text.Json.Nodes;
 using Application.GameLists;
+using Application.Games;
 using Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
+using Details = Application.GameLists.Details;
+using List = Application.GameLists.List;
 
 namespace API.Controllers;
 
@@ -29,9 +32,9 @@ public class GameListsController : BaseApiController
     }
 
     [HttpPut("{id:guid}/add")]
-    public async Task<IActionResult> AddGamesToGameList(Guid id, [FromBody] List<Game> games)
+    public async Task<IActionResult> AddGameToGameList(Guid id, [FromBody] Game game)
     {
-        await Mediator.Send(new AddGames.Command { ListId = id, Games = games });
+        await Mediator.Send(new AddGames.Command { ListId = id, Game = game });
 
         return Ok();
     }

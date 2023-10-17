@@ -32,7 +32,8 @@ public class Search
 
             if (!string.IsNullOrEmpty(request.SearchTerm))
             {
-                query = query.Where(g => g.Title.Contains(request.SearchTerm));
+                var format = $"%{request.SearchTerm}%";
+                query = query.Where(g => EF.Functions.Like(g.Title, format));
             }
 
             var games = await query
