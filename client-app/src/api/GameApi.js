@@ -1,8 +1,8 @@
 import axios from "axios";
 
 export default {
-  getGameDetails: (game) => {
-    return axios.get("http://localhost:5000/api/games/" + game.id)
+  getGameDetails: (gameId) => {
+    return axios.get("http://localhost:5000/api/games/" + gameId)
       .then(response => response)
       .catch(error => error)
   },

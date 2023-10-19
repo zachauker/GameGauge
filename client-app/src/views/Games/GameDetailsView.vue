@@ -1,15 +1,28 @@
 <script setup>
-import GameDetailsCard from "@/components/Games/GameDetailsCard.vue"
+import {ref } from "vue"
+import { onMounted } from "vue";
+import gameApi from "@/api/GameApi"
+import {useRoute} from "vue-router"
+const route = useRoute()
+const game = ref(null)
+
+onMounted(() => {
+  gameApi.getGameDetails(route.params.id)
+    .then(response => {
+      game.value = response.data
+    })
+})
+
 </script>
 
 <template>
-<v-container :fluid="true">
-  <v-row align="center" justify="center">
-    <v-col cols="8">
-      <game-details-card></game-details-card>
-    </v-col>
-  </v-row>
-</v-container>
+  <v-container :fluid="true">
+    <v-row align="center" justify="center" v-if="game">
+      <v-col cols="12">
+        {{ game.title }}
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <style scoped>

@@ -35,7 +35,7 @@ const routes = [
         component: () => import('@/views/GameLists/GameListDetailsView.vue')
       },
       {
-        path: '/gamelists/:/add',
+        path: '/gamelists/:id/add',
         name: 'AddGameListGames',
         component: () => import('@/views/GameLists/AddGameListGamesView.vue')
       },
@@ -45,9 +45,9 @@ const routes = [
         component: () => import('@/views/GameLists/CreateGameListView.vue')
       },
       {
-        path: '/games/:slug',
+        path: '/games/:id',
         name: 'GameDetails',
-        component: () => import('@/views/Games/GameDetailsView')
+        component: () => import('@/views/Games/GameDetailsView'),
       }
     ],
   },

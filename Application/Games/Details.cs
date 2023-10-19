@@ -26,7 +26,7 @@ public class Details
         
         public async Task<GameDto> Handle(Query request, CancellationToken cancellationToken)
         {
-            var game =  await _context.Games.FindAsync(new object[] { request.Id }, cancellationToken: cancellationToken);
+            var game =  await _context.Games.FirstOrDefaultAsync(g => g.Id == request.Id, cancellationToken: cancellationToken);
 
             return _mapper.Map<GameDto>(game);
         }

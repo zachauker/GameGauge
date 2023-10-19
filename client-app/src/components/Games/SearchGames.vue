@@ -18,9 +18,9 @@ const search = async () => {
     error.value = ''
     isSearching.value = true
     searchStore.searchGames(query.value)
-        .then(() => {
-          isSearching.value = true
-        })
+      .then(() => {
+        isSearching.value = true
+      })
   } catch (err) {
     console.error('There was an error:', err)
     error.value = 'Failed to retrieve results.'
@@ -40,10 +40,10 @@ const onInput = (searchTerm) => {
 
 <template>
   <v-text-field
-      v-model="query.SearchTerm"
-      @update:modelValue="onInput"
-      placeholder="Search for a game..."
-      variant="outlined">
+    v-model="query.SearchTerm"
+    @update:modelValue="onInput"
+    placeholder="Search for a game..."
+    variant="outlined">
   </v-text-field>
 </template>
 
