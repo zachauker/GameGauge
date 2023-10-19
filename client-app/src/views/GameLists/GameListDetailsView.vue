@@ -1,24 +1,29 @@
-<script>
-import { fetchGameListDetails } from '../../api/GameListApi'
-export default {
-  name: "GameListDetails",
-  data() {
-    return {
-      gameList: null
-    }
-  },
+<script setup>
+import gameListApi from '../../api/GameListApi'
+import GameDetailsCard from "@/components/Games/GameDetailsCard.vue"
+import {ref} from "vue"
+import {onMounted} from "vue";
 
-  created() {
-    fetchGameListDetails(this.$route.params.id)
-      .then((response) => {
-        this.gameList = response.data
-      })
-  }
-}
+const gameList = ref(null)
+
+onMounted(() => {
+  gameListApi.fetchGameListDetails(this.$route.params.id)
+    .then((response) => {
+      gameList.value = response.data
+    })
+})
+
+
 </script>
 
 <template>
-
+<v-container :fluid="true">
+  <v-row align="center" justify="center">
+    <v-col cols="8" v-for="game in gameList.value.games">
+      <game-details-card :game="game" ></game-details-card>
+    </v-col>
+  </v-row>
+</v-container>
 </template>
 
 <style scoped>

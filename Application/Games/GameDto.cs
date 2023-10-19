@@ -14,4 +14,9 @@ public class GameDto
     public int? Rating { get; set; }
     public int NumberRatings { get; set; }
     public ICollection<GameListGame> GameLists { get; set; }
+    public ICollection<Platform> Platforms { get; set; }
+    public ICollection<Genre> Genres { get; set; }
+    public ICollection<Engine> Engines { get; set; }
+    public ICollection<Company> Companies { get; set; }
+    public ICollection<AgeRating> AgeRatings { get; set; }
 }

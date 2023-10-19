@@ -43,6 +43,7 @@ try
     var userManager = services.GetRequiredService<UserManager<AppUser>>();
     await UserSeed.SeedData(context, userManager);
     await AgeRatingSeed.SeedData(context);
+    await CompanySeed.SeedData(context);
     await EngineSeed.SeedData(context);
     await GenreSeed.SeedData(context);
     await PlatformSeed.SeedData(context);

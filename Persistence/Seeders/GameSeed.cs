@@ -21,7 +21,7 @@ namespace Persistence.Seeders
             // var igdb = new IGDBClient(
             //     Environment.GetEnvironmentVariable("IGDB_CLIENT_ID"),
             //     Environment.GetEnvironmentVariable("IGDB_CLIENT_SECRET"));
-            var igdb = new IGDBClient("3p2ubjeep5tco48ebgolo2o4a1cjek", "9lzmwsx9eai2lkqg1ye5waxovtltrp");
+            var igdb = new IGDBClient("3p2ubjeep5tco48ebgolo2o4a1cjek", "7d32ezra4dgof88c1dlkvwkve8g4zb");
 
             var games = await FetchPage(igdb, limit, offset);
             ProcessGames(games, context);
@@ -38,7 +38,7 @@ namespace Persistence.Seeders
         {
             var query = $"""
                          
-                                         fields *,platforms.*,genres.*,game_engines.*,age_ratings.*; 
+                                         fields *,platforms.*,genres.*,game_engines.*,age_ratings.*,involved_companies.*; 
                                          sort first_release_date desc;
                                          limit {limit};
                                          offset {offset};

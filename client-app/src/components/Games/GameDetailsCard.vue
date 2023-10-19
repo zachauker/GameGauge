@@ -1,5 +1,4 @@
 <script setup>
-import gameApi from "@/api/GameApi"
 import {useRouter} from "vue-router";
 
 const router = useRouter()
@@ -14,10 +13,6 @@ const props = defineProps({
     defaultValue: false
   }
 })
-
-function addGameToList() {
-  gameApi.addGameToList(game.id)
-}
 
 function viewGame() {
   router.push("/games/" + props.game.id)
@@ -39,7 +34,7 @@ function viewGame() {
           <v-btn variant="outlined" class="float-end" @click="viewGame">View</v-btn>
         </v-col>
         <v-col v-if="showAdd" cols="auto">
-          <v-btn variant="outlined" @click="addGameToList">Add</v-btn>
+          <v-btn variant="outlined" @click="$emit('add-game', game)">Add</v-btn>
         </v-col>
       </v-row>
     </v-card-actions>

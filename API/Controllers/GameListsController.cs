@@ -31,7 +31,7 @@ public class GameListsController : BaseApiController
         return Ok(newList);
     }
 
-    [HttpPut("{id:guid}/add")]
+    [HttpPost("{id:guid}/add")]
     public async Task<IActionResult> AddGameToGameList(Guid id, [FromBody] Game game)
     {
         await Mediator.Send(new AddGames.Command { ListId = id, Game = game });
