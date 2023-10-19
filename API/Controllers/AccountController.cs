@@ -83,7 +83,8 @@ public class AccountController : ControllerBase
             DisplayName = user.DisplayName,
             Image = null,
             Token = _tokenService.CreateToken(user),
-            UserName = user.UserName
+            UserName = user.UserName,
+            Email = user.Email
         };
     }
 }

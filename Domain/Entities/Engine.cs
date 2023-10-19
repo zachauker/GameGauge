@@ -1,3 +1,5 @@
+using Domain.Attributes;
+
 namespace Domain.Entities;
 
 public class Engine
@@ -9,4 +11,8 @@ public class Engine
     public long? IgdbId { get; set; }
     public List<Platform>? Platforms { get; set; }
     public List<Game>? Games { get; set; }
+    [Timestamp] 
+    public DateTime CreatedAt { get; set; }
+    [Timestamp]
+    public DateTime UpdatedAt { get; set; }
 }

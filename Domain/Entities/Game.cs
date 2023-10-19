@@ -1,4 +1,5 @@
 using System.Runtime.InteropServices.JavaScript;
+using Domain.Attributes;
 
 namespace Domain.Entities;
 
@@ -13,10 +14,13 @@ public class Game
     public DateTimeOffset? ReleaseDate { get; set; }
     public int? Rating { get; set; }
     public int NumberRatings { get; set; }
-    public List<Platform> Platforms { get; set; } = new();
-    public List<Genre> Genres { get; set; } = new();
-    public List<Engine> Engines { get; set; } = new();
-    public List<Company> Companies { get; set; } = new();
-    public List<AgeRating> AgeRatings { get; set; } = new();
-
+    public ICollection<Platform> Platforms { get; set; }
+    public ICollection<Genre> Genres { get; set; }
+    public ICollection<Engine> Engines { get; set; }
+    public ICollection<AgeRating> AgeRatings { get; set; }
+    public ICollection<GameListGame> GameLists { get; set; }
+    [Timestamp] 
+    public DateTime CreatedAt { get; set; }
+    [Timestamp] 
+    public DateTime UpdatedAt { get; set; }
 }
