@@ -2,15 +2,13 @@ using Domain.Attributes;
 
 namespace Domain.Entities;
 
-public class Engine
+public class Review
 {
     public Guid Id { get; set; }
-    public string Name { get; set; }
+    public Game Game { get; set; }
+    public AppUser User { get; set; }
+    public int Rating { get; set; }
     public string Description { get; set; }
-    public string Slug { get; set; }
-    public long? IgdbId { get; set; }
-    public ICollection<Platform>? Platforms { get; set; }
-    public ICollection<Game>? Games { get; set; }
     [Timestamp] 
     public DateTime CreatedAt { get; set; }
     [Timestamp]

@@ -13,7 +13,7 @@ public class Platform
     public string Slug { get; set; }
     public string? AlternativeName { get; set; }
     public long? IgdbId { get; set; }
-    public List<Game> Games { get; set; } = new();
+    public ICollection<Game> Games { get; set; }
     [Timestamp] 
     public DateTime CreatedAt { get; set; }
     [Timestamp] 

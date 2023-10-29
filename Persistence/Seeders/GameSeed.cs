@@ -118,9 +118,6 @@ namespace Persistence.Seeders
                 }
 
                 await context.Games.AddRangeAsync(myGame);
-
-                // Now you have a custom Game entity with data from the API response
-                Console.WriteLine($"Custom Game Name: {myGame.Title}");
             }
 
             await context.SaveChangesAsync();

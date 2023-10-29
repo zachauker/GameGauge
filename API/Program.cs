@@ -12,16 +12,17 @@ builder.Services.AddControllers();
 builder.Services.AddApplicationServices(builder.Configuration);
 
 
-var  myAllowSpecificOrigins = "_myAllowSpecificOrigins";
+var myAllowSpecificOrigins = "_myAllowSpecificOrigins";
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(name: myAllowSpecificOrigins,
-                      policy  =>
-                      {
-                          policy.WithOrigins("http://localhost:3000")
-                              .WithMethods("GET", "POST", "PUT", "DELETE")
-                                .WithHeaders("Content-Type");;
-                      });
+        policy =>
+        {
+            policy.WithOrigins("http://localhost:3000")
+                .WithMethods("GET", "POST", "PUT", "DELETE")
+                .WithHeaders("Content-Type");
+            ;
+        });
 });
 var app = builder.Build();
 
@@ -41,14 +42,46 @@ try
     var context = services.GetRequiredService<DataContext>();
     await context.Database.MigrateAsync();
     var userManager = services.GetRequiredService<UserManager<AppUser>>();
-    await UserSeed.SeedData(context, userManager);
-    await AgeRatingSeed.SeedData(context);
-    await CompanySeed.SeedData(context);
-    await EngineSeed.SeedData(context);
-    await GenreSeed.SeedData(context);
-    await PlatformSeed.SeedData(context);
-    await GameSeed.SeedData(context);
-    await ReleaseDateSeed.SeedData(context);
+
+    if (args.Contains("UserSeed"))
+    {
+        await UserSeed.SeedData(context, userManager);
+    }
+
+    if (args.Contains("AgeRatingSeed"))
+    {
+        await AgeRatingSeed.SeedData(context);
+    }
+
+    if (args.Contains("CompanySeed"))
+    {
+        await CompanySeed.SeedData(context);
+    }
+
+    if (args.Contains("EngineSeed"))
+    {
+        await EngineSeed.SeedData(context);
+    }
+
+    if (args.Contains("GenreSeed"))
+    {
+        await GenreSeed.SeedData(context);
+    }
+
+    if (args.Contains("PlatformSeed"))
+    {
+        await PlatformSeed.SeedData(context);
+    }
+
+    if (args.Contains("GameSeed"))
+    {
+        await GameSeed.SeedData(context);
+    }
+
+    if (args.Contains("ReleaseDateSeed"))
+    {
+        await ReleaseDateSeed.SeedData(context);
+    }
 }
 catch (Exception e)
 {
