@@ -299,24 +299,52 @@ namespace Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "EngineGame",
+                name: "GameCompany",
                 columns: table => new
                 {
-                    EnginesId = table.Column<Guid>(type: "uuid", nullable: false),
-                    GamesId = table.Column<Guid>(type: "uuid", nullable: false)
+                    GameId = table.Column<Guid>(type: "uuid", nullable: false),
+                    CompanyId = table.Column<Guid>(type: "uuid", nullable: false),
+                    IsDeveloper = table.Column<bool>(type: "boolean", nullable: false),
+                    IsPublisher = table.Column<bool>(type: "boolean", nullable: false),
+                    IsSupporter = table.Column<bool>(type: "boolean", nullable: false),
+                    IsPorter = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_EngineGame", x => new { x.EnginesId, x.GamesId });
+                    table.PrimaryKey("PK_GameCompany", x => new { x.GameId, x.CompanyId });
                     table.ForeignKey(
-                        name: "FK_EngineGame_Engines_EnginesId",
-                        column: x => x.EnginesId,
+                        name: "FK_GameCompany_Companies_CompanyId",
+                        column: x => x.CompanyId,
+                        principalTable: "Companies",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_GameCompany_Games_GameId",
+                        column: x => x.GameId,
+                        principalTable: "Games",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "GameEngine",
+                columns: table => new
+                {
+                    GameId = table.Column<Guid>(type: "uuid", nullable: false),
+                    EngineId = table.Column<Guid>(type: "uuid", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_GameEngine", x => new { x.EngineId, x.GameId });
+                    table.ForeignKey(
+                        name: "FK_GameEngine_Engines_EngineId",
+                        column: x => x.EngineId,
                         principalTable: "Engines",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_EngineGame_Games_GamesId",
-                        column: x => x.GamesId,
+                        name: "FK_GameEngine_Games_GameId",
+                        column: x => x.GameId,
                         principalTable: "Games",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -326,21 +354,21 @@ namespace Persistence.Migrations
                 name: "GameGenre",
                 columns: table => new
                 {
-                    GamesId = table.Column<Guid>(type: "uuid", nullable: false),
-                    GenresId = table.Column<Guid>(type: "uuid", nullable: false)
+                    GameId = table.Column<Guid>(type: "uuid", nullable: false),
+                    GenreId = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_GameGenre", x => new { x.GamesId, x.GenresId });
+                    table.PrimaryKey("PK_GameGenre", x => new { x.GenreId, x.GameId });
                     table.ForeignKey(
-                        name: "FK_GameGenre_Games_GamesId",
-                        column: x => x.GamesId,
+                        name: "FK_GameGenre_Games_GameId",
+                        column: x => x.GameId,
                         principalTable: "Games",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_GameGenre_Genres_GenresId",
-                        column: x => x.GenresId,
+                        name: "FK_GameGenre_Genres_GenreId",
+                        column: x => x.GenreId,
                         principalTable: "Genres",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -360,17 +388,11 @@ namespace Persistence.Migrations
                     AlternativeName = table.Column<string>(type: "text", nullable: true),
                     IgdbId = table.Column<long>(type: "bigint", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "timestamp", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP"),
-                    UpdatedAt = table.Column<DateTime>(type: "timestamp", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP"),
-                    EngineId = table.Column<Guid>(type: "uuid", nullable: true)
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP")
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Platforms", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Platforms_Engines_EngineId",
-                        column: x => x.EngineId,
-                        principalTable: "Engines",
-                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Platforms_PlatformFamilies_PlatformFamilyId",
                         column: x => x.PlatformFamilyId,
@@ -405,24 +427,48 @@ namespace Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "GamePlatform",
+                name: "EnginePlatform",
                 columns: table => new
                 {
-                    GamesId = table.Column<Guid>(type: "uuid", nullable: false),
-                    PlatformsId = table.Column<Guid>(type: "uuid", nullable: false)
+                    EngineId = table.Column<Guid>(type: "uuid", nullable: false),
+                    PlatformId = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_GamePlatform", x => new { x.GamesId, x.PlatformsId });
+                    table.PrimaryKey("PK_EnginePlatform", x => new { x.EngineId, x.PlatformId });
                     table.ForeignKey(
-                        name: "FK_GamePlatform_Games_GamesId",
-                        column: x => x.GamesId,
+                        name: "FK_EnginePlatform_Engines_EngineId",
+                        column: x => x.EngineId,
+                        principalTable: "Engines",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_EnginePlatform_Platforms_PlatformId",
+                        column: x => x.PlatformId,
+                        principalTable: "Platforms",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "GamePlatform",
+                columns: table => new
+                {
+                    GameId = table.Column<Guid>(type: "uuid", nullable: false),
+                    PlatformId = table.Column<Guid>(type: "uuid", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_GamePlatform", x => new { x.PlatformId, x.GameId });
+                    table.ForeignKey(
+                        name: "FK_GamePlatform_Games_GameId",
+                        column: x => x.GameId,
                         principalTable: "Games",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_GamePlatform_Platforms_PlatformsId",
-                        column: x => x.PlatformsId,
+                        name: "FK_GamePlatform_Platforms_PlatformId",
+                        column: x => x.PlatformId,
                         principalTable: "Platforms",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -504,14 +550,24 @@ namespace Persistence.Migrations
                 column: "ParentId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_EngineGame_GamesId",
-                table: "EngineGame",
-                column: "GamesId");
+                name: "IX_EnginePlatform_PlatformId",
+                table: "EnginePlatform",
+                column: "PlatformId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_GameGenre_GenresId",
+                name: "IX_GameCompany_CompanyId",
+                table: "GameCompany",
+                column: "CompanyId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_GameEngine_GameId",
+                table: "GameEngine",
+                column: "GameId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_GameGenre_GameId",
                 table: "GameGenre",
-                column: "GenresId");
+                column: "GameId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_GameListGames_GameId",
@@ -524,14 +580,9 @@ namespace Persistence.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_GamePlatform_PlatformsId",
+                name: "IX_GamePlatform_GameId",
                 table: "GamePlatform",
-                column: "PlatformsId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Platforms_EngineId",
-                table: "Platforms",
-                column: "EngineId");
+                column: "GameId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Platforms_PlatformFamilyId",
@@ -571,10 +622,13 @@ namespace Persistence.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "Companies");
+                name: "EnginePlatform");
 
             migrationBuilder.DropTable(
-                name: "EngineGame");
+                name: "GameCompany");
+
+            migrationBuilder.DropTable(
+                name: "GameEngine");
 
             migrationBuilder.DropTable(
                 name: "GameGenre");
@@ -592,6 +646,12 @@ namespace Persistence.Migrations
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
+                name: "Companies");
+
+            migrationBuilder.DropTable(
+                name: "Engines");
+
+            migrationBuilder.DropTable(
                 name: "Genres");
 
             migrationBuilder.DropTable(
@@ -605,9 +665,6 @@ namespace Persistence.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
-
-            migrationBuilder.DropTable(
-                name: "Engines");
 
             migrationBuilder.DropTable(
                 name: "PlatformFamilies");

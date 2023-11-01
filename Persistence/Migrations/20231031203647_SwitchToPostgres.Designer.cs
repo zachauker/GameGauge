@@ -12,7 +12,7 @@ using Persistence;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20231029143911_SwitchToPostgres")]
+    [Migration("20231031203647_SwitchToPostgres")]
     partial class SwitchToPostgres
     {
         /// <inheritdoc />
@@ -210,6 +210,21 @@ namespace Persistence.Migrations
                     b.ToTable("Engines");
                 });
 
+            modelBuilder.Entity("Domain.Entities.EnginePlatform", b =>
+                {
+                    b.Property<Guid>("EngineId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("PlatformId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("EngineId", "PlatformId");
+
+                    b.HasIndex("PlatformId");
+
+                    b.ToTable("EnginePlatform");
+                });
+
             modelBuilder.Entity("Domain.Entities.Game", b =>
                 {
                     b.Property<Guid>("Id")
@@ -253,6 +268,63 @@ namespace Persistence.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Games");
+                });
+
+            modelBuilder.Entity("Domain.Entities.GameCompany", b =>
+                {
+                    b.Property<Guid>("GameId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("CompanyId")
+                        .HasColumnType("uuid");
+
+                    b.Property<bool>("IsDeveloper")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsPorter")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsPublisher")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsSupporter")
+                        .HasColumnType("boolean");
+
+                    b.HasKey("GameId", "CompanyId");
+
+                    b.HasIndex("CompanyId");
+
+                    b.ToTable("GameCompany");
+                });
+
+            modelBuilder.Entity("Domain.Entities.GameEngine", b =>
+                {
+                    b.Property<Guid>("EngineId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("GameId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("EngineId", "GameId");
+
+                    b.HasIndex("GameId");
+
+                    b.ToTable("GameEngine");
+                });
+
+            modelBuilder.Entity("Domain.Entities.GameGenre", b =>
+                {
+                    b.Property<Guid>("GenreId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("GameId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("GenreId", "GameId");
+
+                    b.HasIndex("GameId");
+
+                    b.ToTable("GameGenre");
                 });
 
             modelBuilder.Entity("Domain.Entities.GameList", b =>
@@ -308,6 +380,21 @@ namespace Persistence.Migrations
                     b.ToTable("GameListGames");
                 });
 
+            modelBuilder.Entity("Domain.Entities.GamePlatform", b =>
+                {
+                    b.Property<Guid>("PlatformId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("GameId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("PlatformId", "GameId");
+
+                    b.HasIndex("GameId");
+
+                    b.ToTable("GamePlatform");
+                });
+
             modelBuilder.Entity("Domain.Entities.Genre", b =>
                 {
                     b.Property<Guid>("Id")
@@ -355,9 +442,6 @@ namespace Persistence.Migrations
                         .HasColumnType("timestamp")
                         .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
-                    b.Property<Guid?>("EngineId")
-                        .HasColumnType("uuid");
-
                     b.Property<int?>("Generation")
                         .HasColumnType("integer");
 
@@ -382,8 +466,6 @@ namespace Persistence.Migrations
                         .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("EngineId");
 
                     b.HasIndex("PlatformFamilyId");
 
@@ -458,51 +540,6 @@ namespace Persistence.Migrations
                     b.HasIndex("PlatformId");
 
                     b.ToTable("ReleaseDates");
-                });
-
-            modelBuilder.Entity("EngineGame", b =>
-                {
-                    b.Property<Guid>("EnginesId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("GamesId")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("EnginesId", "GamesId");
-
-                    b.HasIndex("GamesId");
-
-                    b.ToTable("EngineGame");
-                });
-
-            modelBuilder.Entity("GameGenre", b =>
-                {
-                    b.Property<Guid>("GamesId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("GenresId")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("GamesId", "GenresId");
-
-                    b.HasIndex("GenresId");
-
-                    b.ToTable("GameGenre");
-                });
-
-            modelBuilder.Entity("GamePlatform", b =>
-                {
-                    b.Property<Guid>("GamesId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("PlatformsId")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("GamesId", "PlatformsId");
-
-                    b.HasIndex("PlatformsId");
-
-                    b.ToTable("GamePlatform");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -653,6 +690,82 @@ namespace Persistence.Migrations
                     b.Navigation("Parent");
                 });
 
+            modelBuilder.Entity("Domain.Entities.EnginePlatform", b =>
+                {
+                    b.HasOne("Domain.Entities.Engine", "Engine")
+                        .WithMany("Platforms")
+                        .HasForeignKey("EngineId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entities.Platform", "Platform")
+                        .WithMany("Engines")
+                        .HasForeignKey("PlatformId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Engine");
+
+                    b.Navigation("Platform");
+                });
+
+            modelBuilder.Entity("Domain.Entities.GameCompany", b =>
+                {
+                    b.HasOne("Domain.Entities.Company", "Company")
+                        .WithMany("InvolvedGames")
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entities.Game", "Game")
+                        .WithMany("InvolvedCompanies")
+                        .HasForeignKey("GameId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Company");
+
+                    b.Navigation("Game");
+                });
+
+            modelBuilder.Entity("Domain.Entities.GameEngine", b =>
+                {
+                    b.HasOne("Domain.Entities.Engine", "Engine")
+                        .WithMany("Games")
+                        .HasForeignKey("EngineId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entities.Game", "Game")
+                        .WithMany("Engines")
+                        .HasForeignKey("GameId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Engine");
+
+                    b.Navigation("Game");
+                });
+
+            modelBuilder.Entity("Domain.Entities.GameGenre", b =>
+                {
+                    b.HasOne("Domain.Entities.Game", "Game")
+                        .WithMany("Genres")
+                        .HasForeignKey("GameId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entities.Genre", "Genre")
+                        .WithMany("Games")
+                        .HasForeignKey("GenreId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Game");
+
+                    b.Navigation("Genre");
+                });
+
             modelBuilder.Entity("Domain.Entities.GameList", b =>
                 {
                     b.HasOne("Domain.Entities.AppUser", "User")
@@ -681,12 +794,27 @@ namespace Persistence.Migrations
                     b.Navigation("GameList");
                 });
 
+            modelBuilder.Entity("Domain.Entities.GamePlatform", b =>
+                {
+                    b.HasOne("Domain.Entities.Game", "Game")
+                        .WithMany("Platforms")
+                        .HasForeignKey("GameId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entities.Platform", "Platform")
+                        .WithMany("Games")
+                        .HasForeignKey("PlatformId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Game");
+
+                    b.Navigation("Platform");
+                });
+
             modelBuilder.Entity("Domain.Entities.Platform", b =>
                 {
-                    b.HasOne("Domain.Entities.Engine", null)
-                        .WithMany("Platforms")
-                        .HasForeignKey("EngineId");
-
                     b.HasOne("Domain.Entities.PlatformFamily", "PlatformFamily")
                         .WithMany()
                         .HasForeignKey("PlatformFamilyId");
@@ -707,51 +835,6 @@ namespace Persistence.Migrations
                     b.Navigation("Game");
 
                     b.Navigation("Platform");
-                });
-
-            modelBuilder.Entity("EngineGame", b =>
-                {
-                    b.HasOne("Domain.Entities.Engine", null)
-                        .WithMany()
-                        .HasForeignKey("EnginesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Domain.Entities.Game", null)
-                        .WithMany()
-                        .HasForeignKey("GamesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("GameGenre", b =>
-                {
-                    b.HasOne("Domain.Entities.Game", null)
-                        .WithMany()
-                        .HasForeignKey("GamesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Domain.Entities.Genre", null)
-                        .WithMany()
-                        .HasForeignKey("GenresId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("GamePlatform", b =>
-                {
-                    b.HasOne("Domain.Entities.Game", null)
-                        .WithMany()
-                        .HasForeignKey("GamesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Domain.Entities.Platform", null)
-                        .WithMany()
-                        .HasForeignKey("PlatformsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -810,8 +893,15 @@ namespace Persistence.Migrations
                     b.Navigation("UserLists");
                 });
 
+            modelBuilder.Entity("Domain.Entities.Company", b =>
+                {
+                    b.Navigation("InvolvedGames");
+                });
+
             modelBuilder.Entity("Domain.Entities.Engine", b =>
                 {
+                    b.Navigation("Games");
+
                     b.Navigation("Platforms");
                 });
 
@@ -819,12 +909,32 @@ namespace Persistence.Migrations
                 {
                     b.Navigation("AgeRatings");
 
+                    b.Navigation("Engines");
+
                     b.Navigation("GameLists");
+
+                    b.Navigation("Genres");
+
+                    b.Navigation("InvolvedCompanies");
+
+                    b.Navigation("Platforms");
                 });
 
             modelBuilder.Entity("Domain.Entities.GameList", b =>
                 {
                     b.Navigation("ListGames");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Genre", b =>
+                {
+                    b.Navigation("Games");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Platform", b =>
+                {
+                    b.Navigation("Engines");
+
+                    b.Navigation("Games");
                 });
 #pragma warning restore 612, 618
         }

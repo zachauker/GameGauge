@@ -12,6 +12,7 @@ public class Company
     public long? IgdbId { get; set; }
     public Company? Parent { get; set; }
     public string Url { get; set; }
+    public ICollection<GameCompany> InvolvedGames { get; set; }
     public DateTimeOffset? FoundedDate { get; set; }
     [Timestamp] 
     public DateTime CreatedAt { get; set; }
