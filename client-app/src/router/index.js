@@ -48,10 +48,14 @@ const routes = [
         path: '/games/:id',
         name: 'GameDetails',
         component: () => import('@/views/Games/GameDetailsView'),
+      },
+      {
+        path: '/games/:id/review',
+        name: 'ReviewGame',
+        component: () => import('@/views/Reviews/CreateReviewView.vue')
       }
     ],
   },
-
 ]
 
 const router = createRouter({
