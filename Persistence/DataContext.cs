@@ -90,6 +90,16 @@ public class DataContext : IdentityDbContext<AppUser>
                 .HasOne(gp => gp.Platform)
                 .WithMany(p => p.Games)
                 .HasForeignKey(gp => gp.PlatformId);
+
+            modelBuilder.Entity<Review>()
+                .HasOne(r => r.Game)
+                .WithMany(g => g.Reviews)
+                .HasForeignKey(r => r.GameId);
+
+            modelBuilder.Entity<Game>()
+                .HasMany(g => g.Reviews)
+                .WithOne(r => r.Game)
+                .HasForeignKey(r => r.GameId);
             
             var properties = entityType.ClrType.GetProperties()
                 .Where(p => p.GetCustomAttributes(typeof(TimestampAttribute), false).Any());
@@ -133,4 +143,5 @@ public class DataContext : IdentityDbContext<AppUser>
     public DbSet<GameEngine> GameEngines { get; set; }
     public DbSet<GameCompany> GameCompanies { get; set; }
     public DbSet<GamePlatform> GamePlatforms { get; set; }
+    public DbSet<Review> Reviews { get; set; }
 }

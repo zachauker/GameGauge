@@ -6,6 +6,7 @@ public class Review
 {
     public Guid Id { get; set; }
     public Game Game { get; set; }
+    public Guid GameId { get; set; }
     public AppUser User { get; set; }
     public int Rating { get; set; }
     public string Description { get; set; }

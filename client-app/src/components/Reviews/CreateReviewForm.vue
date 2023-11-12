@@ -24,7 +24,7 @@ export default {
     submit() {
       reviewApi.createReview(this.review)
           .then(response => {
-            
+
           })
     }
   }
