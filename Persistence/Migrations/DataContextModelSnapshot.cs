@@ -54,7 +54,7 @@ namespace Persistence.Migrations
 
                     b.HasIndex("GameId");
 
-                    b.ToTable("AgeRatings");
+                    b.ToTable("AgeRatings", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.AppUser", b =>
@@ -171,7 +171,7 @@ namespace Persistence.Migrations
 
                     b.HasIndex("ParentId");
 
-                    b.ToTable("Companies");
+                    b.ToTable("Companies", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.Engine", b =>
@@ -204,7 +204,7 @@ namespace Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Engines");
+                    b.ToTable("Engines", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.EnginePlatform", b =>
@@ -219,7 +219,7 @@ namespace Persistence.Migrations
 
                     b.HasIndex("PlatformId");
 
-                    b.ToTable("EnginePlatform");
+                    b.ToTable("EnginePlatform", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.Game", b =>
@@ -264,7 +264,7 @@ namespace Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Games");
+                    b.ToTable("Games", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.GameCompany", b =>
@@ -291,7 +291,7 @@ namespace Persistence.Migrations
 
                     b.HasIndex("CompanyId");
 
-                    b.ToTable("GameCompanies");
+                    b.ToTable("GameCompanies", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.GameEngine", b =>
@@ -306,7 +306,7 @@ namespace Persistence.Migrations
 
                     b.HasIndex("GameId");
 
-                    b.ToTable("GameEngines");
+                    b.ToTable("GameEngines", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.GameGenre", b =>
@@ -321,7 +321,7 @@ namespace Persistence.Migrations
 
                     b.HasIndex("GameId");
 
-                    b.ToTable("GameGenres");
+                    b.ToTable("GameGenres", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.GameList", b =>
@@ -353,7 +353,7 @@ namespace Persistence.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("GameLists");
+                    b.ToTable("GameLists", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.GameListGame", b =>
@@ -374,7 +374,7 @@ namespace Persistence.Migrations
 
                     b.HasIndex("GameId");
 
-                    b.ToTable("GameListGames");
+                    b.ToTable("GameListGames", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.GamePlatform", b =>
@@ -389,7 +389,7 @@ namespace Persistence.Migrations
 
                     b.HasIndex("GameId");
 
-                    b.ToTable("GamePlatforms");
+                    b.ToTable("GamePlatforms", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.Genre", b =>
@@ -419,7 +419,7 @@ namespace Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Genres");
+                    b.ToTable("Genres", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.Platform", b =>
@@ -466,7 +466,7 @@ namespace Persistence.Migrations
 
                     b.HasIndex("PlatformFamilyId");
 
-                    b.ToTable("Platforms");
+                    b.ToTable("Platforms", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.PlatformFamily", b =>
@@ -496,7 +496,7 @@ namespace Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("PlatformFamilies");
+                    b.ToTable("PlatformFamilies", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.ReleaseDate", b =>
@@ -536,7 +536,7 @@ namespace Persistence.Migrations
 
                     b.HasIndex("PlatformId");
 
-                    b.ToTable("ReleaseDates");
+                    b.ToTable("ReleaseDates", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.Review", b =>
@@ -573,7 +573,7 @@ namespace Persistence.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Reviews");
+                    b.ToTable("Reviews", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>

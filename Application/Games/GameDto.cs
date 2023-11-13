@@ -13,10 +13,10 @@ public class GameDto
     public DateTimeOffset? ReleaseDate { get; set; }
     public int? Rating { get; set; }
     public int NumberRatings { get; set; }
-    public ICollection<GameListGame> GameLists { get; set; }
-    public ICollection<Platform> Platforms { get; set; }
+    public ICollection<GamePlatform> Platforms { get; set; }
     public ICollection<Genre> Genres { get; set; }
-    public ICollection<Engine> Engines { get; set; }
-    public ICollection<Company> Companies { get; set; }
+    public ICollection<GameEngine> Engines { get; set; }
+    public ICollection<GameCompany> Companies { get; set; }
     public ICollection<AgeRating> AgeRatings { get; set; }
+    public ICollection<Review> Reviews { get; set; }
 }

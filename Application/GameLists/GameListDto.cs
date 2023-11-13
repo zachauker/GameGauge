@@ -9,5 +9,5 @@ public class GameListDto
     public string Title { get; set; }
     public string Description { get; set; }
     public Profile UserProfile { get; set; }
-    public ICollection<Game> ListGames { get; set; }
+    public ICollection<GameListGame> ListGames { get; set; }
 }

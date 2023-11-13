@@ -31,8 +31,9 @@ public class AddGames
 
         public async Task Handle(Command request, CancellationToken cancellationToken)
         {
-            var gameList = await _context.GameLists.Include(gl=> gl.ListGames).FirstOrDefaultAsync(gl => gl.Id == request.ListId,
-                cancellationToken: cancellationToken);
+            var gameList = await _context.GameLists.ProjectTo<GameListDto>(_mapper.ConfigurationProvider)
+                .FirstOrDefaultAsync(gl => gl.Id == request.ListId,
+                    cancellationToken: cancellationToken);
 
             if (gameList != null)
             {
@@ -51,7 +52,7 @@ public class AddGames
                         Position = maxPosition + 1,
                         DateAdded = DateTime.Now
                     };
-                    
+
                     gameList.ListGames.Add(listGame);
                 }
             }

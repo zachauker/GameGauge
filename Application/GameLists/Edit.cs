@@ -27,7 +27,7 @@ public class Edit
         {
             var gameList = await _context.GameLists.FindAsync(new object[] { request.GameList.Id }, cancellationToken: cancellationToken);
 
-            _mapper.Map(request.GameList, gameList);
+            _mapper.Map<GameListDto>(gameList);
 
             await _context.SaveChangesAsync(cancellationToken);
         }
