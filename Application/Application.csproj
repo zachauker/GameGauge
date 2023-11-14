@@ -20,11 +20,6 @@
 
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="GameCompanies\" />
-    <Folder Include="GameEngines\" />
-  </ItemGroup>
-
 
 
 

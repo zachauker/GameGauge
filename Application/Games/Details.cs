@@ -27,7 +27,8 @@ public class Details
 
         public async Task<GameDto> Handle(Query request, CancellationToken cancellationToken)
         {
-            var game = await _context.Games.ProjectTo<GameDto>(_mapper.ConfigurationProvider)
+            var game = await _context.Games
+                .ProjectTo<GameDto>(_mapper.ConfigurationProvider)
                 .FirstOrDefaultAsync(g => g.Id == request.Id, cancellationToken: cancellationToken);
 
             return game;

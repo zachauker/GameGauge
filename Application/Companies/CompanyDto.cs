@@ -12,5 +12,4 @@ public class CompanyDto
     public long? IgdbId { get; set; }
     public Company? Parent { get; set; }
     public string Url { get; set; }
-    public ICollection<GameCompany> InvolvedGames { get; set; }
 }

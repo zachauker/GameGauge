@@ -1,3 +1,4 @@
+using Application.Platforms;
 using Domain.Entities;
 
 namespace Application.Engines;
@@ -9,6 +10,4 @@ public class EngineDto
     public string Description { get; set; }
     public string Slug { get; set; }
     public long? IgdbId { get; set; }
-    public ICollection<EnginePlatform>? Platforms { get; set; }
-    public ICollection<GameEngine>? Games { get; set; }
 }

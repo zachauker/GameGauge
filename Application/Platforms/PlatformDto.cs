@@ -13,6 +13,4 @@ public class PlatformDto
     public string Slug { get; set; }
     public string? AlternativeName { get; set; }
     public long? IgdbId { get; set; }
-    public ICollection<GamePlatform> Games { get; set; }
-    public ICollection<EnginePlatform> Engines { get; set; }
 }

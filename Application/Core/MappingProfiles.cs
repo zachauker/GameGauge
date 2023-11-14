@@ -1,8 +1,12 @@
+using Application.AgeRatings;
 using Application.Companies;
 using Application.Engines;
+using Application.GameCompanies;
+using Application.GameEngines;
 using Application.GameGenres;
 using Application.GameListGames;
 using Application.GameLists;
+using Application.GamePlatforms;
 using Application.Games;
 using Application.Reviews;
 using Application.Genres;
@@ -22,24 +26,31 @@ public class MappingProfiles : Profile
                 o => o.MapFrom(s => s.ListGames.Select(lg => lg.Game)));
 
         CreateMap<Game, GameDto>()
-            .ForMember(dest => dest.Genres, opt => opt.MapFrom(src => src.Genres.Select(gg => gg.Genre)));
-
+            .ForMember(dest => dest.Genres, opt => opt.MapFrom(src => src.Genres.Select(gg => gg.Genre)))
+            .ForMember(dest => dest.Companies,
+                opt => opt.MapFrom(src => src.InvolvedCompanies.Select(ic => ic.Company)))
+            .ForMember(dest => dest.Engines, opt => opt.MapFrom(g => g.Engines.Select(ge => ge.Engine)))
+            .ForMember(dest => dest.AgeRatings, opt => opt.MapFrom(src => src.AgeRatings))
+            .ForMember(dest => dest.Platforms, opt => opt.MapFrom(src => src.Platforms.Select(gp => gp.Platform)));
+        
         CreateMap<GameListGame, GameListGameDto>()
             .ForMember(dest => dest.Position, opt => opt.MapFrom(src => src.Position))
             .ForMember(dest => dest.DateAdded, opt => opt.MapFrom(src => src.DateAdded));
 
-        CreateMap<Genre, GenreDto>()
-            .ForMember(d => d.Games, o => o.MapFrom(s => s.Games.Select(g => g.Game)));
+        CreateMap<Genre, GenreDto>();
+        CreateMap<GameGenre, GameGenreDto>();
 
-        CreateMap<Platform, PlatformDto>()
-            .ForMember(dest => dest.Games, opt => opt.MapFrom(p => p.Games.Select(gp => gp.Game)));
+        CreateMap<Platform, PlatformDto>();
+        CreateMap<GamePlatform, GamePlatformDto>();
 
-        CreateMap<Engine, EngineDto>()
-            .ForMember(dest => dest.Games, opt => opt.MapFrom(src => src.Games.Select(ge => ge.Game)));
+        CreateMap<Engine, EngineDto>();
+        CreateMap<GameEngine, GameEngineDto>();
 
-        CreateMap<Company, CompanyDto>()
-            .ForMember(dest => dest.InvolvedGames, opt => opt.MapFrom(src => src.InvolvedGames.Select(ig => ig.Game)));
-        
+        CreateMap<Company, CompanyDto>();
+        CreateMap<GameCompany, GameCompanyDto>();
+
+        CreateMap<AgeRating, AgeRatingDto>();
+
         CreateMap<Review, ReviewDto>()
             .ForMember(d => d.UserProfile, o => o.MapFrom(s => s.User))
             .ForMember(d => d.Game, o => o.MapFrom(s => s.Game));
