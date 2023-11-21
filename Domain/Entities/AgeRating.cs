@@ -8,6 +8,7 @@ namespace Domain.Entities
         public string? Category { get; set; }
         public long? IgdbId { get; set; }
         public string Synopsis { get; set; }
+        public ICollection<GameAgeRating> Games { get; set; }
         [Timestamp] 
         public DateTime CreatedAt { get; set; }
         [Timestamp] 

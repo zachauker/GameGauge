@@ -100,6 +100,18 @@ public class DataContext : IdentityDbContext<AppUser>
                 .HasMany(g => g.Reviews)
                 .WithOne(r => r.Game)
                 .HasForeignKey(r => r.GameId);
+
+            modelBuilder.Entity<GameAgeRating>(x => x.HasKey(ga => new { ga.GameId, ga.AgeRatingId }));
+
+            modelBuilder.Entity<GameAgeRating>()
+                .HasOne(ga => ga.Game)
+                .WithMany(g => g.AgeRatings)
+                .HasForeignKey(ga => ga.GameId);
+
+            modelBuilder.Entity<GameAgeRating>()
+                .HasOne(ga => ga.AgeRating)
+                .WithMany(a => a.Games)
+                .HasForeignKey(ga => ga.AgeRatingId);
             
             var properties = entityType.ClrType.GetProperties()
                 .Where(p => p.GetCustomAttributes(typeof(TimestampAttribute), false).Any());

@@ -1,6 +1,7 @@
 using Application.AgeRatings;
 using Application.Companies;
 using Application.Engines;
+using Application.GameAgeRatings;
 using Application.GameCompanies;
 using Application.GameEngines;
 using Application.GameGenres;
@@ -30,7 +31,7 @@ public class MappingProfiles : Profile
             .ForMember(dest => dest.Companies,
                 opt => opt.MapFrom(src => src.InvolvedCompanies.Select(ic => ic.Company)))
             .ForMember(dest => dest.Engines, opt => opt.MapFrom(g => g.Engines.Select(ge => ge.Engine)))
-            .ForMember(dest => dest.AgeRatings, opt => opt.MapFrom(src => src.AgeRatings))
+            .ForMember(dest => dest.AgeRatings, opt => opt.MapFrom(src => src.AgeRatings.Select(ga => ga.AgeRating)))
             .ForMember(dest => dest.Platforms, opt => opt.MapFrom(src => src.Platforms.Select(gp => gp.Platform)));
         
         CreateMap<GameListGame, GameListGameDto>()
@@ -50,6 +51,7 @@ public class MappingProfiles : Profile
         CreateMap<GameCompany, GameCompanyDto>();
 
         CreateMap<AgeRating, AgeRatingDto>();
+        CreateMap<GameAgeRating, GameAgeRatingDto>();
 
         CreateMap<Review, ReviewDto>()
             .ForMember(d => d.UserProfile, o => o.MapFrom(s => s.User))

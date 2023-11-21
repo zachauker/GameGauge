@@ -17,7 +17,7 @@ public class Game
     public ICollection<GamePlatform> Platforms { get; set; }
     public ICollection<GameGenre> Genres { get; set; }
     public ICollection<GameEngine> Engines { get; set; }
-    public ICollection<AgeRating> AgeRatings { get; set; }
+    public ICollection<GameAgeRating> AgeRatings { get; set; }
     public ICollection<GameListGame> GameLists { get; set; }
     public ICollection<GameCompany> InvolvedCompanies { get; set; }
     public ICollection<Review> Reviews { get; set; }

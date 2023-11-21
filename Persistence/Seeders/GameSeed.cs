@@ -157,7 +157,15 @@ namespace Persistence.Seeders
 
                         if (matchingRating != null)
                         {
-                            game.AgeRatings.Add(matchingRating);
+                            var gameAgeRating = new GameAgeRating
+                            {
+                                GameId = game.Id,
+                                AgeRatingId = matchingRating.Id,
+                                Game = game,
+                                AgeRating = matchingRating
+                            };
+                            
+                            game.AgeRatings.Add(gameAgeRating);
                         }
                     }
                 }

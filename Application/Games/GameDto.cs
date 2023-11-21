@@ -1,6 +1,7 @@
 using Application.AgeRatings;
 using Application.Companies;
 using Application.Engines;
+using Application.GameAgeRatings;
 using Application.Genres;
 using Application.Platforms;
 using Domain.Entities;
