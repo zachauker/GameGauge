@@ -22,14 +22,96 @@ public class DataContext : IdentityDbContext<AppUser>
             modelBuilder.Entity<GameListGame>(x => x.HasKey(glg => new { glg.GameListId, glg.GameId }));
 
             modelBuilder.Entity<GameListGame>()
-                .HasOne(gl => gl.GameList)
-                .WithMany(g => g.ListGames)
+                .HasOne(glg => glg.GameList)
+                .WithMany(gl => gl.ListGames)
                 .HasForeignKey(glg => glg.GameListId);
-            
+
             modelBuilder.Entity<GameListGame>()
-                .HasOne(gl => gl.Game)
+                .HasOne(glg => glg.Game)
                 .WithMany(g => g.GameLists)
                 .HasForeignKey(glg => glg.GameId);
+
+            modelBuilder.Entity<EnginePlatform>(x => x.HasKey(ep => new { ep.EngineId, ep.PlatformId }));
+
+            modelBuilder.Entity<EnginePlatform>()
+                .HasOne(ep => ep.Engine)
+                .WithMany(e => e.Platforms)
+                .HasForeignKey(ep => ep.EngineId);
+
+            modelBuilder.Entity<EnginePlatform>()
+                .HasOne(ep => ep.Platform)
+                .WithMany(p => p.Engines)
+                .HasForeignKey(ep => ep.PlatformId);
+
+            modelBuilder.Entity<GameCompany>(x => x.HasKey(gc => new { gc.GameId, gc.CompanyId }));
+
+            modelBuilder.Entity<GameCompany>()
+                .HasOne(gc => gc.Game)
+                .WithMany(g => g.InvolvedCompanies)
+                .HasForeignKey(gc => gc.GameId);
+
+            modelBuilder.Entity<GameCompany>()
+                .HasOne(gc => gc.Company)
+                .WithMany(c => c.InvolvedGames)
+                .HasForeignKey(gc => gc.CompanyId);
+
+            modelBuilder.Entity<GameEngine>(x => x.HasKey(ge => new { ge.EngineId, ge.GameId }));
+
+            modelBuilder.Entity<GameEngine>()
+                .HasOne(ge => ge.Game)
+                .WithMany(g => g.Engines)
+                .HasForeignKey(ge => ge.GameId);
+
+            modelBuilder.Entity<GameEngine>()
+                .HasOne(ge => ge.Engine)
+                .WithMany(e => e.Games)
+                .HasForeignKey(ge => ge.EngineId);
+
+            modelBuilder.Entity<GameGenre>(x => x.HasKey(gg => new { gg.GenreId, gg.GameId }));
+
+            modelBuilder.Entity<GameGenre>()
+                .HasOne(gg => gg.Game)
+                .WithMany(g => g.Genres)
+                .HasForeignKey(gg => gg.GameId);
+
+            modelBuilder.Entity<GameGenre>()
+                .HasOne(gg => gg.Genre)
+                .WithMany(g => g.Games)
+                .HasForeignKey(gg => gg.GenreId);
+
+            modelBuilder.Entity<GamePlatform>(x => x.HasKey(gp => new { gp.PlatformId, gp.GameId }));
+
+            modelBuilder.Entity<GamePlatform>()
+                .HasOne(gp => gp.Game)
+                .WithMany(p => p.Platforms)
+                .HasForeignKey(gg => gg.GameId);
+
+            modelBuilder.Entity<GamePlatform>()
+                .HasOne(gp => gp.Platform)
+                .WithMany(p => p.Games)
+                .HasForeignKey(gp => gp.PlatformId);
+
+            modelBuilder.Entity<Review>()
+                .HasOne(r => r.Game)
+                .WithMany(g => g.Reviews)
+                .HasForeignKey(r => r.GameId);
+
+            modelBuilder.Entity<Game>()
+                .HasMany(g => g.Reviews)
+                .WithOne(r => r.Game)
+                .HasForeignKey(r => r.GameId);
+
+            modelBuilder.Entity<GameAgeRating>(x => x.HasKey(ga => new { ga.GameId, ga.AgeRatingId }));
+
+            modelBuilder.Entity<GameAgeRating>()
+                .HasOne(ga => ga.Game)
+                .WithMany(g => g.AgeRatings)
+                .HasForeignKey(ga => ga.GameId);
+
+            modelBuilder.Entity<GameAgeRating>()
+                .HasOne(ga => ga.AgeRating)
+                .WithMany(a => a.Games)
+                .HasForeignKey(ga => ga.AgeRatingId);
             
             var properties = entityType.ClrType.GetProperties()
                 .Where(p => p.GetCustomAttributes(typeof(TimestampAttribute), false).Any());
@@ -69,4 +151,9 @@ public class DataContext : IdentityDbContext<AppUser>
     public DbSet<Company> Companies { get; set; }
     public DbSet<GameList> GameLists { get; set; }
     public DbSet<GameListGame> GameListGames { get; set; }
+    public DbSet<GameGenre> GameGenres { get; set; }
+    public DbSet<GameEngine> GameEngines { get; set; }
+    public DbSet<GameCompany> GameCompanies { get; set; }
+    public DbSet<GamePlatform> GamePlatforms { get; set; }
+    public DbSet<Review> Reviews { get; set; }
 }

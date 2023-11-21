@@ -1,3 +1,9 @@
+using Application.AgeRatings;
+using Application.Companies;
+using Application.Engines;
+using Application.GameAgeRatings;
+using Application.Genres;
+using Application.Platforms;
 using Domain.Entities;
 
 namespace Application.Games;
@@ -13,10 +19,9 @@ public class GameDto
     public DateTimeOffset? ReleaseDate { get; set; }
     public int? Rating { get; set; }
     public int NumberRatings { get; set; }
-    public ICollection<GameListGame> GameLists { get; set; }
-    public ICollection<Platform> Platforms { get; set; }
-    public ICollection<Genre> Genres { get; set; }
-    public ICollection<Engine> Engines { get; set; }
-    public ICollection<Company> Companies { get; set; }
-    public ICollection<AgeRating> AgeRatings { get; set; }
+    public ICollection<PlatformDto> Platforms { get; set; }
+    public ICollection<GenreDto> Genres { get; set; }
+    public ICollection<EngineDto> Engines { get; set; }
+    public ICollection<CompanyDto> Companies { get; set; }
+    public ICollection<AgeRatingDto> AgeRatings { get; set; }
 }

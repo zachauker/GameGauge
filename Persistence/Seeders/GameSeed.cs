@@ -3,7 +3,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Domain.Entities;
 using IGDB;
+using Microsoft.EntityFrameworkCore;
 using ApiGame = IGDB.Models.Game;
 using DomainGame = Domain.Entities.Game;
 
@@ -25,7 +27,7 @@ namespace Persistence.Seeders
 
             var games = await FetchPage(igdb, limit, offset);
             ProcessGames(games, context);
-            
+
             while (games.Length == limit)
             {
                 offset += limit;
@@ -38,7 +40,7 @@ namespace Persistence.Seeders
         {
             var query = $"""
                          
-                                         fields *,platforms.*,genres.*,game_engines.*,age_ratings.*,involved_companies.*; 
+                                         fields *,platforms.*,genres.*,game_engines.*,age_ratings.*,involved_companies.*;
                                          sort first_release_date desc;
                                          limit {limit};
                                          offset {offset};
@@ -49,7 +51,7 @@ namespace Persistence.Seeders
             return games;
         }
 
-        private static async void ProcessGames(IEnumerable<ApiGame> apiGames, DataContext context)
+        private static void ProcessGames(IEnumerable<ApiGame> apiGames, DataContext context)
         {
             foreach (var apiGame in apiGames)
             {
@@ -63,7 +65,26 @@ namespace Persistence.Seeders
                     StoryLine = apiGame.Storyline,
                     ReleaseDate = apiGame.FirstReleaseDate,
                 };
-                
+
+                var game = context.Games.Add(myGame);
+
+                context.SaveChanges();
+
+                ProcessRelations(apiGame, game.Entity.Id, context);
+            }
+        }
+
+        private static void ProcessRelations(ApiGame apiGame, Guid gameId, DataContext context)
+        {
+            var game = context.Games.Include(g => g.Engines)
+                .Include(g => g.Platforms)
+                .Include(g => g.Genres)
+                .Include(g => g.InvolvedCompanies)
+                .Include(g => g.AgeRatings)
+                .FirstOrDefault(g => g.Id == gameId);
+
+            if (game != null)
+            {
                 if (apiGame.Platforms != null)
                 {
                     foreach (var apiPlatform in apiGame.Platforms.Values)
@@ -73,7 +94,15 @@ namespace Persistence.Seeders
 
                         if (matchingPlatform != null)
                         {
-                            myGame.Platforms.Add(matchingPlatform);
+                            var gamePlatform = new GamePlatform
+                            {
+                                GameId = game.Id,
+                                Game = game,
+                                PlatformId = matchingPlatform.Id,
+                                Platform = matchingPlatform
+                            };
+
+                            game.Platforms.Add(gamePlatform);
                         }
                     }
                 }
@@ -86,7 +115,15 @@ namespace Persistence.Seeders
 
                         if (matchingGenre != null)
                         {
-                            myGame.Genres.Add(matchingGenre);
+                            var gameGenre = new GameGenre
+                            {
+                                GameId = game.Id,
+                                Game = game,
+                                GenreId = matchingGenre.Id,
+                                Genre = matchingGenre
+                            };
+
+                            game.Genres.Add(gameGenre);
                         }
                     }
                 }
@@ -99,7 +136,15 @@ namespace Persistence.Seeders
 
                         if (matchingEngine != null)
                         {
-                            myGame.Engines.Add(matchingEngine);
+                            var gameEngine = new GameEngine
+                            {
+                                GameId = game.Id,
+                                Game = game,
+                                EngineId = matchingEngine.Id,
+                                Engine = matchingEngine
+                            };
+
+                            game.Engines.Add(gameEngine);
                         }
                     }
                 }
@@ -112,18 +157,47 @@ namespace Persistence.Seeders
 
                         if (matchingRating != null)
                         {
-                            myGame.AgeRatings.Add(matchingRating);
+                            var gameAgeRating = new GameAgeRating
+                            {
+                                GameId = game.Id,
+                                AgeRatingId = matchingRating.Id,
+                                Game = game,
+                                AgeRating = matchingRating
+                            };
+                            
+                            game.AgeRatings.Add(gameAgeRating);
                         }
                     }
                 }
 
-                await context.Games.AddRangeAsync(myGame);
+                if (apiGame.InvolvedCompanies != null)
+                {
+                    foreach (var apiCompany in apiGame.InvolvedCompanies.Values)
+                    {
+                        var matchingCompany =
+                            context.Companies.FirstOrDefault(company => company.IgdbId == apiCompany.Id);
 
-                // Now you have a custom Game entity with data from the API response
-                Console.WriteLine($"Custom Game Name: {myGame.Title}");
+                        if (matchingCompany != null)
+                        {
+                            var gameCompany = new GameCompany
+                            {
+                                GameId = game.Id,
+                                Game = game,
+                                CompanyId = matchingCompany.Id,
+                                Company = matchingCompany,
+                                IsPorter = apiCompany.Porting != null && apiCompany.Porting.Value,
+                                IsDeveloper = apiCompany.Developer.Value,
+                                IsPublisher = apiCompany.Publisher != null && apiCompany.Publisher.Value,
+                                IsSupporter = apiCompany.Supporting.Value
+                            };
+                            
+                            game.InvolvedCompanies.Add(gameCompany);
+                        }
+                    }
+                }
+
+                context.SaveChanges();
             }
-
-            await context.SaveChangesAsync();
         }
     }
 }

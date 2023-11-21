@@ -8,7 +8,7 @@ public class Genre
     public string Name { get; set; }
     public string Slug { get; set; }
     public long? IgdbId { get; set; }
-    public List<Game> Games { get; set; }
+    public virtual ICollection<GameGenre> Games { get; set; }
     [Timestamp] 
     public DateTime CreatedAt { get; set; }
     [Timestamp]

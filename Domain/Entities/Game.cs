@@ -14,11 +14,13 @@ public class Game
     public DateTimeOffset? ReleaseDate { get; set; }
     public int? Rating { get; set; }
     public int NumberRatings { get; set; }
-    public ICollection<Platform> Platforms { get; set; }
-    public ICollection<Genre> Genres { get; set; }
-    public ICollection<Engine> Engines { get; set; }
-    public ICollection<AgeRating> AgeRatings { get; set; }
+    public ICollection<GamePlatform> Platforms { get; set; }
+    public ICollection<GameGenre> Genres { get; set; }
+    public ICollection<GameEngine> Engines { get; set; }
+    public ICollection<GameAgeRating> AgeRatings { get; set; }
     public ICollection<GameListGame> GameLists { get; set; }
+    public ICollection<GameCompany> InvolvedCompanies { get; set; }
+    public ICollection<Review> Reviews { get; set; }
     [Timestamp] 
     public DateTime CreatedAt { get; set; }
     [Timestamp] 
