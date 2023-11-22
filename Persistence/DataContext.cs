@@ -112,7 +112,22 @@ public class DataContext : IdentityDbContext<AppUser>
                 .HasOne(ga => ga.AgeRating)
                 .WithMany(a => a.Games)
                 .HasForeignKey(ga => ga.AgeRatingId);
-            
+
+            modelBuilder.Entity<Artwork>()
+                .HasOne(a => a.Game)
+                .WithMany(g => g.Artworks)
+                .HasForeignKey(a => a.GameId);
+
+            modelBuilder.Entity<Cover>()
+                .HasOne(c => c.Game)
+                .WithMany(g => g.Covers)
+                .HasForeignKey(c => c.GameId);
+
+            modelBuilder.Entity<GameVideo>()
+                .HasOne(gv => gv.Game)
+                .WithMany(g => g.Videos)
+                .HasForeignKey(gv => gv.GameId);
+
             var properties = entityType.ClrType.GetProperties()
                 .Where(p => p.GetCustomAttributes(typeof(TimestampAttribute), false).Any());
 
@@ -156,4 +171,7 @@ public class DataContext : IdentityDbContext<AppUser>
     public DbSet<GameCompany> GameCompanies { get; set; }
     public DbSet<GamePlatform> GamePlatforms { get; set; }
     public DbSet<Review> Reviews { get; set; }
+    public DbSet<Artwork> Artworks { get; set; }
+    public DbSet<Cover> Covers { get; set; }
+    public DbSet<GameVideo> GameVideos { get; set; }
 }

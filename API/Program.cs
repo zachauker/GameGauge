@@ -82,6 +82,13 @@ try
     {
         await ReleaseDateSeed.SeedData(context);
     }
+
+    if (args.Contains("MediaSeed"))
+    {
+        await ArtworkSeed.SeedData(context);
+        await CoverSeed.SeedData(context);
+        await GameVideoSeed.SeedData(context);
+    }
 }
 catch (Exception e)
 {

@@ -21,6 +21,9 @@ public class Game
     public ICollection<GameListGame> GameLists { get; set; }
     public ICollection<GameCompany> InvolvedCompanies { get; set; }
     public ICollection<Review> Reviews { get; set; }
+    public ICollection<Artwork> Artworks { get; set; }
+    public ICollection<Cover> Covers { get; set; }
+    public ICollection<GameVideo> Videos { get; set; }
     [Timestamp] 
     public DateTime CreatedAt { get; set; }
     [Timestamp] 
