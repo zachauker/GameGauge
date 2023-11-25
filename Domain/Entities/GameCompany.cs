@@ -6,8 +6,8 @@ public class GameCompany
     public Game Game { get; set; }
     public Guid CompanyId { get; set; }
     public Company Company { get; set; }
-    public bool IsDeveloper { get; set; }
-    public bool IsPublisher { get; set; }
-    public bool IsSupporter { get; set; }
-    public bool IsPorter { get; set; }
+    public bool? IsDeveloper { get; set; }
+    public bool? IsPublisher { get; set; }
+    public bool? IsSupporter { get; set; }
+    public bool? IsPorter { get; set; }
 }

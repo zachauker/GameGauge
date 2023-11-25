@@ -40,7 +40,7 @@ namespace Persistence.Seeders
         {
             var query = $"""
                          
-                                         fields *,platforms.*,genres.*,game_engines.*,age_ratings.*,involved_companies.*;
+                                         fields *;
                                          sort first_release_date desc;
                                          limit {limit};
                                          offset {offset};
@@ -51,7 +51,7 @@ namespace Persistence.Seeders
             return games;
         }
 
-        private static void ProcessGames(IEnumerable<ApiGame> apiGames, DataContext context)
+        private static async void ProcessGames(IEnumerable<ApiGame> apiGames, DataContext context)
         {
             foreach (var apiGame in apiGames)
             {
@@ -66,138 +66,10 @@ namespace Persistence.Seeders
                     ReleaseDate = apiGame.FirstReleaseDate,
                 };
 
-                var game = context.Games.Add(myGame);
-
-                context.SaveChanges();
-
-                ProcessRelations(apiGame, game.Entity.Id, context);
+                var game = context.Games.AddRangeAsync(myGame);
             }
-        }
-
-        private static void ProcessRelations(ApiGame apiGame, Guid gameId, DataContext context)
-        {
-            var game = context.Games.Include(g => g.Engines)
-                .Include(g => g.Platforms)
-                .Include(g => g.Genres)
-                .Include(g => g.InvolvedCompanies)
-                .Include(g => g.AgeRatings)
-                .FirstOrDefault(g => g.Id == gameId);
-
-            if (game != null)
-            {
-                if (apiGame.Platforms != null)
-                {
-                    foreach (var apiPlatform in apiGame.Platforms.Values)
-                    {
-                        var matchingPlatform =
-                            context.Platforms.FirstOrDefault(platform => platform.IgdbId == apiPlatform.Id);
-
-                        if (matchingPlatform != null)
-                        {
-                            var gamePlatform = new GamePlatform
-                            {
-                                GameId = game.Id,
-                                Game = game,
-                                PlatformId = matchingPlatform.Id,
-                                Platform = matchingPlatform
-                            };
-
-                            game.Platforms.Add(gamePlatform);
-                        }
-                    }
-                }
-
-                if (apiGame.Genres != null)
-                {
-                    foreach (var apiGenre in apiGame.Genres.Values)
-                    {
-                        var matchingGenre = context.Genres.FirstOrDefault(genre => genre.IgdbId == apiGenre.Id);
-
-                        if (matchingGenre != null)
-                        {
-                            var gameGenre = new GameGenre
-                            {
-                                GameId = game.Id,
-                                Game = game,
-                                GenreId = matchingGenre.Id,
-                                Genre = matchingGenre
-                            };
-
-                            game.Genres.Add(gameGenre);
-                        }
-                    }
-                }
-
-                if (apiGame.GameEngines != null)
-                {
-                    foreach (var apiEngine in apiGame.GameEngines.Values)
-                    {
-                        var matchingEngine = context.Engines.FirstOrDefault(engine => engine.IgdbId == apiEngine.Id);
-
-                        if (matchingEngine != null)
-                        {
-                            var gameEngine = new GameEngine
-                            {
-                                GameId = game.Id,
-                                Game = game,
-                                EngineId = matchingEngine.Id,
-                                Engine = matchingEngine
-                            };
-
-                            game.Engines.Add(gameEngine);
-                        }
-                    }
-                }
-
-                if (apiGame.AgeRatings != null)
-                {
-                    foreach (var apiRating in apiGame.AgeRatings.Values)
-                    {
-                        var matchingRating = context.AgeRatings.FirstOrDefault(rating => rating.IgdbId == apiRating.Id);
-
-                        if (matchingRating != null)
-                        {
-                            var gameAgeRating = new GameAgeRating
-                            {
-                                GameId = game.Id,
-                                AgeRatingId = matchingRating.Id,
-                                Game = game,
-                                AgeRating = matchingRating
-                            };
-                            
-                            game.AgeRatings.Add(gameAgeRating);
-                        }
-                    }
-                }
-
-                if (apiGame.InvolvedCompanies != null)
-                {
-                    foreach (var apiCompany in apiGame.InvolvedCompanies.Values)
-                    {
-                        var matchingCompany =
-                            context.Companies.FirstOrDefault(company => company.IgdbId == apiCompany.Id);
-
-                        if (matchingCompany != null)
-                        {
-                            var gameCompany = new GameCompany
-                            {
-                                GameId = game.Id,
-                                Game = game,
-                                CompanyId = matchingCompany.Id,
-                                Company = matchingCompany,
-                                IsPorter = apiCompany.Porting != null && apiCompany.Porting.Value,
-                                IsDeveloper = apiCompany.Developer.Value,
-                                IsPublisher = apiCompany.Publisher != null && apiCompany.Publisher.Value,
-                                IsSupporter = apiCompany.Supporting.Value
-                            };
-                            
-                            game.InvolvedCompanies.Add(gameCompany);
-                        }
-                    }
-                }
-
-                context.SaveChanges();
-            }
+            
+            await context.SaveChangesAsync();
         }
     }
 }

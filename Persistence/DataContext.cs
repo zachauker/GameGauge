@@ -170,6 +170,7 @@ public class DataContext : IdentityDbContext<AppUser>
     public DbSet<GameEngine> GameEngines { get; set; }
     public DbSet<GameCompany> GameCompanies { get; set; }
     public DbSet<GamePlatform> GamePlatforms { get; set; }
+    public DbSet<GameAgeRating> GameAgeRatings { get; set; }
     public DbSet<Review> Reviews { get; set; }
     public DbSet<Artwork> Artworks { get; set; }
     public DbSet<Cover> Covers { get; set; }
