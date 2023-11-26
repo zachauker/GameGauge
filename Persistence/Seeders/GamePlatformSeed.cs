@@ -59,11 +59,12 @@ public class GamePlatformSeed
 
             var game = context.Games.FirstOrDefault(game => game.IgdbId == apiGame.Id);
 
-            var existingGamePlatform =
-                context.GamePlatforms.FirstOrDefault(gp => gp.GameId == game.Id && gp.PlatformId == platform.Id);
 
             if (game != null)
             {
+                var existingGamePlatform =
+                    context.GamePlatforms.FirstOrDefault(gp => gp.GameId == game.Id && gp.PlatformId == platform.Id);
+
                 if (existingGamePlatform == null)
                 {
                     var gamePlatform = new GamePlatform
@@ -74,7 +75,7 @@ public class GamePlatformSeed
                         PlatformId = platform.Id
                     };
 
-                    await context.GamePlatforms.AddRangeAsync(gamePlatform);
+                    await context.GamePlatforms.AddAsync(gamePlatform);
                 }
             }
         }

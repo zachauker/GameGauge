@@ -89,14 +89,20 @@ try
         await CoverSeed.SeedData(context);
         await GameVideoSeed.SeedData(context);
     }
-    
+
+
     if (args.Contains("GameRelationSeed"))
     {
-        await GameGenreSeed.SeedData(context);
-        await GameAgeRatingSeed.SeedData(context);
-        await GameCompanySeed.SeedData(context);
-        await GameEngineSeed.SeedData(context);
-        await GamePlatformSeed.SeedData(context);
+        var gameGenreSeeder = services.GetRequiredService<GameGenreSeed>();
+        await gameGenreSeeder.SeedData();
+
+        var gameCompanySeeder = services.GetRequiredService<GameCompanySeed>();
+        await gameCompanySeeder.SeedData();
+        // var gameAgeRatingSeed = services.GetRequiredService<GameAgeRatingSeed>();
+        // await gameAgeRatingSeed.SeedData();
+        // await GameAgeRatingSeed.SeedData(context);
+        // await GameEngineSeed.SeedData(context);
+        // await GamePlatformSeed.SeedData(context);
     }
 }
 catch (Exception e)

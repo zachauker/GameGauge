@@ -61,11 +61,11 @@ public class GameEngineSeed
 
             var game = context.Games.FirstOrDefault(game => game.IgdbId == apiGame.Id);
 
-            var existingGameEngine =
-                context.GameEngines.FirstOrDefault(ge => ge.EngineId == engine.Id && ge.GameId == game.Id);
-
             if (game != null)
             {
+                var existingGameEngine =
+                    context.GameEngines.FirstOrDefault(ge => ge.EngineId == engine.Id && ge.GameId == game.Id);
+
                 if (existingGameEngine == null)
                 {
                     var gameEngine = new GameEngine

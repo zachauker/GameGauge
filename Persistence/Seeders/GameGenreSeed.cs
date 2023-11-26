@@ -1,6 +1,7 @@
 using Domain.Entities;
 using IGDB;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using ApiGenre = IGDB.Models.Genre;
 using ApiGame = IGDB.Models.Game;
 using DomainGenre = Domain.Entities.Genre;
@@ -9,27 +10,36 @@ namespace Persistence.Seeders;
 
 public class GameGenreSeed
 {
-    public static async Task SeedData(DataContext context)
+    private ILogger<GameGenreSeed> _logger;
+    private DataContext _context;
+
+    public GameGenreSeed(ILogger<GameGenreSeed> logger, DataContext context)
     {
-        if (context.GameGenres.Any()) return;
+        _logger = logger;
+        _context = context;
+    }
+
+    public async Task SeedData()
+    {
+        if (_context.GameGenres.Any()) return;
 
         const int limit = 250;
         var offset = 0;
 
         var igdb = new IGDBClient("3p2ubjeep5tco48ebgolo2o4a1cjek", "7d32ezra4dgof88c1dlkvwkve8g4zb");
 
-        var genres = context.Genres.ToList();
+        var genres = _context.Genres.ToList();
 
         foreach (var genre in genres)
         {
             var apiGames = await FetchPage(igdb, genre.IgdbId, limit, offset);
-            ProcessGames(apiGames, genre, context);
+            ProcessGames(apiGames, genre);
 
             while (apiGames.Length == limit)
             {
                 offset += limit;
                 apiGames = await FetchPage(igdb, genre.IgdbId, limit, offset);
-                ProcessGames(apiGames, genre, context);
+                ProcessGames(apiGames, genre);
             }
 
             offset = 0;
@@ -47,21 +57,20 @@ public class GameGenreSeed
                                      
                      """;
 
-        var apiGames = await client.QueryAsync<ApiGame>(IGDBClient.Endpoints.Games, query);
-        return apiGames;
+        return await client.QueryAsync<ApiGame>(IGDBClient.Endpoints.Games, query);
     }
 
-    private static async void ProcessGames(IEnumerable<ApiGame> apiGames, Genre genre, DataContext context)
+    private async void ProcessGames(IEnumerable<ApiGame> apiGames, Genre genre)
     {
         foreach (var apiGame in apiGames)
         {
             if (apiGame == null) continue;
 
-            var game = context.Games.FirstOrDefault(game => game.IgdbId == apiGame.Id);
+            var game = _context.Games.FirstOrDefault(game => game.IgdbId == apiGame.Id);
 
             if (game != null)
             {
-                var existingGameGenre = context.GameGenres
+                var existingGameGenre = _context.GameGenres
                     .FirstOrDefault(gg => gg.GameId == game.Id && gg.GenreId == genre.Id);
 
                 if (existingGameGenre == null)
@@ -74,11 +83,11 @@ public class GameGenreSeed
                         GenreId = genre.Id
                     };
 
-                    await context.GameGenres.AddAsync(gameGenre);
+                    await _context.GameGenres.AddAsync(gameGenre);
                 }
             }
         }
-        
-        await context.SaveChangesAsync();
+
+        await _context.SaveChangesAsync();
     }
 }

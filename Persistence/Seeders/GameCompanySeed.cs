@@ -1,6 +1,7 @@
 using Domain.Entities;
 using IGDB;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using ApiCompany = IGDB.Models.Genre;
 using ApiGame = IGDB.Models.Game;
 using DomainCompany = Domain.Entities.Company;
@@ -9,27 +10,36 @@ namespace Persistence.Seeders;
 
 public class GameCompanySeed
 {
-    public static async Task SeedData(DataContext context)
+    private ILogger<GameCompanySeed> _logger;
+    private readonly DataContext _context;
+
+    public GameCompanySeed(ILogger<GameCompanySeed> logger, DataContext context)
     {
-        if (context.GameCompanies.Any()) return;
+        _logger = logger;
+        _context = context;
+    }
+
+    public async Task SeedData()
+    {
+        if (await _context.GameCompanies.AnyAsync()) return;
 
         const int limit = 250;
         var offset = 0;
 
         var igdb = new IGDBClient("3p2ubjeep5tco48ebgolo2o4a1cjek", "7d32ezra4dgof88c1dlkvwkve8g4zb");
 
-        var companies = context.Companies.ToList();
+        var companies = await _context.Companies.AsNoTracking().ToListAsync();
 
         foreach (var company in companies)
         {
             var apiGames = await FetchPage(igdb, company.IgdbId, limit, offset);
-            ProcessGames(apiGames, company, context);
+            ProcessGames(apiGames, company);
 
             while (apiGames.Length == limit)
             {
                 offset += limit;
                 apiGames = await FetchPage(igdb, company.IgdbId, limit, offset);
-                ProcessGames(apiGames, company, context);
+                ProcessGames(apiGames, company);
             }
 
             offset = 0;
@@ -40,7 +50,7 @@ public class GameCompanySeed
     {
         var query = $"""
                      
-                                     fields *,involved_companies.*;
+                                     fields name,id,involved_companies.*;
                                      where involved_companies = ({companyId});
                                      limit {limit};
                                      offset {offset};
@@ -51,42 +61,42 @@ public class GameCompanySeed
         return apiGames;
     }
 
-    private static async void ProcessGames(IEnumerable<ApiGame> apiGames, Company company, DataContext context)
+    private async void ProcessGames(IEnumerable<ApiGame> apiGames, Company company)
     {
+        var gameCompaniesToAdd = new List<GameCompany>();
+        
         foreach (var apiGame in apiGames)
         {
             if (apiGame == null) continue;
 
-            var game = context.Games.FirstOrDefault(game => game.IgdbId == apiGame.Id);
-
-            var existingGameCompany =
-                context.GameCompanies.FirstOrDefault(gc => gc.GameId == game.Id && gc.CompanyId == company.Id);
+            var game = _context.Games.FirstOrDefault(game => game.IgdbId == apiGame.Id);
 
             if (game != null)
             {
-                if (existingGameCompany == null)
-                {
-                    var gameCompany = new GameCompany
-                    {
-                        Game = game,
-                        GameId = game.Id,
-                        Company = company,
-                        CompanyId = company.Id,
-                        IsDeveloper = apiGame.InvolvedCompanies.Values.FirstOrDefault(c => c.Id == company.IgdbId)
-                            ?.Developer,
-                        IsPorter =
-                            apiGame.InvolvedCompanies.Values.FirstOrDefault(c => c.Id == company.IgdbId)?.Porting,
-                        IsPublisher = apiGame.InvolvedCompanies.Values.FirstOrDefault(c => c.Id == company.IgdbId)
-                            ?.Publisher,
-                        IsSupporter = apiGame.InvolvedCompanies.Values.FirstOrDefault(c => c.Id == company.IgdbId)
-                            ?.Supporting
-                    };
+                var existingGameCompany =
+                    _context.GameCompanies.FirstOrDefault(gc => gc.GameId == game.Id && gc.CompanyId == company.Id);
 
-                    await context.GameCompanies.AddRangeAsync(gameCompany);
-                }
+                if (existingGameCompany != null) continue;
+
+                var apiCompany = apiGame.InvolvedCompanies.Values.FirstOrDefault(c => c.Id == company.IgdbId);
+
+                if (apiCompany == null) continue;
+
+                var gameCompany = new GameCompany()
+                {
+                    GameId = game.Id,
+                    CompanyId = company.Id,
+                    IsDeveloper = apiCompany.Developer,
+                    IsPorter = apiCompany.Porting,
+                    IsPublisher = apiCompany.Publisher,
+                    IsSupporter = apiCompany.Supporting
+                };
+
+                gameCompaniesToAdd.Add(gameCompany);
             }
         }
 
-        await context.SaveChangesAsync();
+        await _context.GameCompanies.AddRangeAsync(gameCompaniesToAdd);
+        await _context.SaveChangesAsync();
     }
 }
