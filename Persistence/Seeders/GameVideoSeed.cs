@@ -59,7 +59,7 @@ public class GameVideoSeed
         {
             if (apiVideo == null) continue;
 
-            var game = _context.Games.FirstOrDefault(game => game.IgdbId == apiVideo.Game.Value.Id);
+            var game = _context.Games.FirstOrDefault(game => game.IgdbId == apiVideo.Game.Id);
             if (game != null)
             {
                 var video = new DomainVideo

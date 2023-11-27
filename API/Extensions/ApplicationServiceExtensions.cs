@@ -32,6 +32,9 @@ public static class ApplicationServiceExtensions
         services.AddScoped<GameAgeRatingSeed>();
         services.AddScoped<GameEngineSeed>();
         services.AddScoped<GamePlatformSeed>();
+        services.AddScoped<ArtworkSeed>();
+        services.AddScoped<CoverSeed>();
+        services.AddScoped<GameVideoSeed>();
         
         services.AddIdentityServices(config);
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

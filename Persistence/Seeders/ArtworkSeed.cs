@@ -59,7 +59,7 @@ public class ArtworkSeed
         {
             if (apiArtwork == null) continue;
 
-            var game = _context.Games.FirstOrDefault(game => game.IgdbId == apiArtwork.Game.Value.Id);
+            var game = _context.Games.FirstOrDefault(game => game.IgdbId == apiArtwork.Game.Id);
             if (game != null)
             {
                 var artwork = new DomainArtwork

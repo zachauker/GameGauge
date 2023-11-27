@@ -21,7 +21,7 @@ public class CoverSeed
 
     public async Task SeedData()
     {
-        if (_context.Artworks.Any()) return;
+        if (await _context.Covers.AnyAsync()) return;
 
         const int limit = 250;
         var offset = 0;
@@ -59,20 +59,23 @@ public class CoverSeed
         {
             if (apiCover == null) continue;
 
-            var game = _context.Games.FirstOrDefault(game => game.IgdbId == apiCover.Game.Value.Id);
-            if (game != null)
+            if (apiCover.Game != null)
             {
-                var cover = new DomainCover
+                var game = _context.Games.FirstOrDefault(game => game.IgdbId == apiCover.Game.Id);
+                if (game != null)
                 {
-                    Game = game,
-                    GameId = game.Id,
-                    Url = apiCover.Url,
-                    Height = apiCover.Height,
-                    Width = apiCover.Width,
-                    ImageId = apiCover.ImageId
-                };
+                    var cover = new DomainCover
+                    {
+                        Game = game,
+                        GameId = game.Id,
+                        Url = apiCover.Url,
+                        Height = apiCover.Height,
+                        Width = apiCover.Width,
+                        ImageId = apiCover.ImageId
+                    };
 
-                await _context.Covers.AddRangeAsync(cover);
+                    await _context.Covers.AddRangeAsync(cover);
+                }
             }
         }
 
