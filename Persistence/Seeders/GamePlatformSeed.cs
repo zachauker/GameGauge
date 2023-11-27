@@ -1,6 +1,7 @@
 using Domain.Entities;
 using IGDB;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using ApiPlatform = IGDB.Models.Platform;
 using ApiGame = IGDB.Models.Game;
 using DomainPlatform = Domain.Entities.Platform;
@@ -9,34 +10,43 @@ namespace Persistence.Seeders;
 
 public class GamePlatformSeed
 {
-    public static async Task SeedData(DataContext context)
+    private ILogger<GameCompanySeed> _logger;
+    private readonly DataContext _context;
+
+    public GamePlatformSeed(ILogger<GameCompanySeed> logger, DataContext context)
     {
-        if (context.GamePlatforms.Any()) return;
+        _logger = logger;
+        _context = context;
+    }
+
+    public async Task SeedData()
+    {
+        if (_context.GamePlatforms.Any()) return;
 
         const int limit = 250;
         var offset = 0;
 
         var igdb = new IGDBClient("3p2ubjeep5tco48ebgolo2o4a1cjek", "7d32ezra4dgof88c1dlkvwkve8g4zb");
 
-        var platforms = context.Platforms.ToList();
+        var platforms = await _context.Platforms.ToListAsync();
 
         foreach (var platform in platforms)
         {
             var apiGames = await FetchPage(igdb, platform.IgdbId, limit, offset);
-            ProcessGames(apiGames, platform, context);
+            ProcessGames(apiGames, platform);
 
             while (apiGames.Length == limit)
             {
                 offset += limit;
                 apiGames = await FetchPage(igdb, platform.IgdbId, limit, offset);
-                ProcessGames(apiGames, platform, context);
+                ProcessGames(apiGames, platform);
             }
 
             offset = 0;
         }
     }
 
-    private static async Task<ApiGame[]> FetchPage(IGDBClient client, long? platformId, int limit, int offset)
+    private async Task<ApiGame[]> FetchPage(IGDBClient client, long? platformId, int limit, int offset)
     {
         var query = $"""
                      
@@ -51,19 +61,19 @@ public class GamePlatformSeed
         return apiGames;
     }
 
-    private static async void ProcessGames(IEnumerable<ApiGame> apiGames, Platform platform, DataContext context)
+    private async void ProcessGames(IEnumerable<ApiGame> apiGames, Platform platform)
     {
         foreach (var apiGame in apiGames)
         {
             if (apiGame == null) continue;
 
-            var game = context.Games.FirstOrDefault(game => game.IgdbId == apiGame.Id);
+            var game = _context.Games.FirstOrDefault(game => game.IgdbId == apiGame.Id);
 
 
             if (game != null)
             {
                 var existingGamePlatform =
-                    context.GamePlatforms.FirstOrDefault(gp => gp.GameId == game.Id && gp.PlatformId == platform.Id);
+                    _context.GamePlatforms.FirstOrDefault(gp => gp.GameId == game.Id && gp.PlatformId == platform.Id);
 
                 if (existingGamePlatform == null)
                 {
@@ -75,11 +85,11 @@ public class GamePlatformSeed
                         PlatformId = platform.Id
                     };
 
-                    await context.GamePlatforms.AddAsync(gamePlatform);
+                    await _context.GamePlatforms.AddAsync(gamePlatform);
                 }
             }
         }
 
-        await context.SaveChangesAsync();
+        await _context.SaveChangesAsync();
     }
 }

@@ -3,15 +3,25 @@ using ApiVideo = IGDB.Models.GameVideo;
 using DomainVideo = Domain.Entities.GameVideo;
 using IGDB;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 
 namespace Persistence.Seeders;
 
-public static class GameVideoSeed
+public class GameVideoSeed
 {
-    public static async Task SeedData(DataContext context)
+    private ILogger<GameCompanySeed> _logger;
+    private readonly DataContext _context;
+
+    public GameVideoSeed(ILogger<GameCompanySeed> logger, DataContext context)
     {
-        if (context.GameVideos.Any()) return;
+        _logger = logger;
+        _context = context;
+    }
+
+    public async Task SeedData()
+    {
+        if (await _context.GameVideos.AnyAsync()) return;
 
         const int limit = 250;
         var offset = 0;
@@ -19,17 +29,17 @@ public static class GameVideoSeed
         var igdb = new IGDBClient("3p2ubjeep5tco48ebgolo2o4a1cjek", "7d32ezra4dgof88c1dlkvwkve8g4zb");
 
         var videos = await FetchPage(igdb, limit, offset);
-        ProcessRatings(videos, context);
+        ProcessRatings(videos);
 
         while (videos.Length == limit)
         {
             offset += limit;
             videos = await FetchPage(igdb, limit, offset);
-            ProcessRatings(videos, context);
+            ProcessRatings(videos);
         }
     }
 
-    private static async Task<ApiVideo[]> FetchPage(IGDBClient client, int limit, int offset)
+    private async Task<ApiVideo[]> FetchPage(IGDBClient client, int limit, int offset)
     {
         var query = $"""
                      
@@ -43,13 +53,13 @@ public static class GameVideoSeed
         return apiVideos;
     }
 
-    private static async void ProcessRatings(IEnumerable<ApiVideo> apiVideos, DataContext context)
+    private async void ProcessRatings(IEnumerable<ApiVideo> apiVideos)
     {
         foreach (var apiVideo in apiVideos)
         {
             if (apiVideo == null) continue;
 
-            var game = context.Games.FirstOrDefault(game => game.IgdbId == apiVideo.Game.Value.Id);
+            var game = _context.Games.FirstOrDefault(game => game.IgdbId == apiVideo.Game.Value.Id);
             if (game != null)
             {
                 var video = new DomainVideo
@@ -59,11 +69,11 @@ public static class GameVideoSeed
                     Name = apiVideo.Name,
                     VideoId = apiVideo.VideoId
                 };
-                
-                await context.GameVideos.AddRangeAsync(video);
+
+                await _context.GameVideos.AddRangeAsync(video);
             }
         }
-        
-        await context.SaveChangesAsync();
+
+        await _context.SaveChangesAsync();
     }
 }

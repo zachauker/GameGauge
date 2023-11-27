@@ -3,15 +3,25 @@ using ApiCover = IGDB.Models.Cover;
 using DomainCover = Domain.Entities.Cover;
 using IGDB;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 
 namespace Persistence.Seeders;
 
-public static class CoverSeed
+public class CoverSeed
 {
-    public static async Task SeedData(DataContext context)
+    private ILogger<GameCompanySeed> _logger;
+    private readonly DataContext _context;
+
+    public CoverSeed(ILogger<GameCompanySeed> logger, DataContext context)
     {
-        if (context.Artworks.Any()) return;
+        _logger = logger;
+        _context = context;
+    }
+
+    public async Task SeedData()
+    {
+        if (_context.Artworks.Any()) return;
 
         const int limit = 250;
         var offset = 0;
@@ -19,17 +29,17 @@ public static class CoverSeed
         var igdb = new IGDBClient("3p2ubjeep5tco48ebgolo2o4a1cjek", "7d32ezra4dgof88c1dlkvwkve8g4zb");
 
         var covers = await FetchPage(igdb, limit, offset);
-        ProcessRatings(covers, context);
+        ProcessRatings(covers);
 
         while (covers.Length == limit)
         {
             offset += limit;
             covers = await FetchPage(igdb, limit, offset);
-            ProcessRatings(covers, context);
+            ProcessRatings(covers);
         }
     }
 
-    private static async Task<ApiCover[]> FetchPage(IGDBClient client, int limit, int offset)
+    private async Task<ApiCover[]> FetchPage(IGDBClient client, int limit, int offset)
     {
         var query = $"""
                      
@@ -43,13 +53,13 @@ public static class CoverSeed
         return apiCovers;
     }
 
-    private static async void ProcessRatings(IEnumerable<ApiCover> apiCovers, DataContext context)
+    private async void ProcessRatings(IEnumerable<ApiCover> apiCovers)
     {
         foreach (var apiCover in apiCovers)
         {
             if (apiCover == null) continue;
 
-            var game = context.Games.FirstOrDefault(game => game.IgdbId == apiCover.Game.Value.Id);
+            var game = _context.Games.FirstOrDefault(game => game.IgdbId == apiCover.Game.Value.Id);
             if (game != null)
             {
                 var cover = new DomainCover
@@ -61,11 +71,11 @@ public static class CoverSeed
                     Width = apiCover.Width,
                     ImageId = apiCover.ImageId
                 };
-                
-                await context.Covers.AddRangeAsync(cover);
+
+                await _context.Covers.AddRangeAsync(cover);
             }
         }
-        
-        await context.SaveChangesAsync();
+
+        await _context.SaveChangesAsync();
     }
 }

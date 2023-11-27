@@ -1,6 +1,7 @@
 using Domain.Entities;
 using IGDB;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using ApiAgeRating = IGDB.Models.AgeRating;
 using ApiGame = IGDB.Models.Game;
 using DomainAgeRating = Domain.Entities.AgeRating;
@@ -9,39 +10,40 @@ namespace Persistence.Seeders;
 
 public class GameAgeRatingSeed
 {
-    public static async Task SeedData(DataContext context)
+    private ILogger<GameCompanySeed> _logger;
+    private readonly DataContext _context;
+
+    public GameAgeRatingSeed(ILogger<GameCompanySeed> logger, DataContext context)
     {
-        if (context.GameAgeRatings.Any()) return;
+        _logger = logger;
+        _context = context;
+    }
+
+    public async Task SeedData()
+    {
+        if (await _context.GameAgeRatings.AnyAsync()) return;
 
         const int limit = 250;
         var offset = 0;
 
         var igdb = new IGDBClient("3p2ubjeep5tco48ebgolo2o4a1cjek", "7d32ezra4dgof88c1dlkvwkve8g4zb");
 
-        var ageRatings = context.AgeRatings.ToList();
+        var apiGames = await FetchPage(igdb, limit, offset);
+        ProcessGames(apiGames);
 
-        foreach (var ageRating in ageRatings)
+        while (apiGames.Length == limit)
         {
-            var apiGames = await FetchPage(igdb, ageRating.IgdbId, limit, offset);
-            ProcessGames(apiGames, ageRating, context);
-
-            while (apiGames.Length == limit)
-            {
-                offset += limit;
-                apiGames = await FetchPage(igdb, ageRating.IgdbId, limit, offset);
-                ProcessGames(apiGames, ageRating, context);
-            }
-
-            offset = 0;
+            offset += limit;
+            apiGames = await FetchPage(igdb, limit, offset);
+            ProcessGames(apiGames);
         }
     }
 
-    private static async Task<ApiGame[]> FetchPage(IGDBClient client, long? ageRatingId, int limit, int offset)
+    private async Task<ApiGame[]> FetchPage(IGDBClient client, int limit, int offset)
     {
         var query = $"""
                      
-                                     fields name,id;
-                                     where age_ratings = ({ageRatingId});
+                                     fields name,id, age_ratings.*;
                                      limit {limit};
                                      offset {offset};
                                      
@@ -51,34 +53,47 @@ public class GameAgeRatingSeed
         return apiGames;
     }
 
-    private static async void ProcessGames(IEnumerable<ApiGame> apiGames, AgeRating ageRating, DataContext context)
+    private async void ProcessGames(IEnumerable<ApiGame> apiGames)
     {
+        var gameAgeRatingsToAdd = new List<GameAgeRating>();
+        
         foreach (var apiGame in apiGames)
         {
             if (apiGame == null) continue;
 
-            var game = context.Games.FirstOrDefault(game => game.IgdbId == apiGame.Id);
+            var game = _context.Games.FirstOrDefault(game => game.IgdbId == apiGame.Id);
 
             if (game != null)
             {
-                var existingGameRating = context.GameAgeRatings
-                    .FirstOrDefault(gg => gg.GameId == game.Id && gg.AgeRatingId == ageRating.Id);
-
-                if (existingGameRating == null)
+                if (apiGame.AgeRatings != null)
                 {
-                    var gameAgeRating = new GameAgeRating
+                    foreach (var apiAgeRating in apiGame.AgeRatings.Values)
                     {
-                        Game = game,
-                        GameId = game.Id,
-                        AgeRating = ageRating,
-                        AgeRatingId = ageRating.Id
-                    };
+                        var ageRating = _context.AgeRatings.FirstOrDefault(ar => ar.IgdbId == apiAgeRating.Id);
 
-                    await context.GameAgeRatings.AddAsync(gameAgeRating);
+                        if (ageRating != null)
+                        {
+                            var existingGameRating = _context.GameAgeRatings
+                                .FirstOrDefault(gg => gg.GameId == game.Id && gg.AgeRatingId == ageRating.Id);
+
+                            if (existingGameRating != null) continue;
+                            
+                            var gameAgeRating = new GameAgeRating
+                            {
+                                Game = game,
+                                GameId = game.Id,
+                                AgeRating = ageRating,
+                                AgeRatingId = ageRating.Id
+                            };
+
+                            gameAgeRatingsToAdd.Add(gameAgeRating);
+                        }
+                    }
                 }
             }
         }
 
-        await context.SaveChangesAsync();
+        await _context.AddRangeAsync(gameAgeRatingsToAdd);
+        await _context.SaveChangesAsync();
     }
 }

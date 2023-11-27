@@ -5,7 +5,7 @@ namespace Persistence.Seeders;
 
 public class UserSeed
 {
-    public static async Task SeedData(DataContext context, UserManager<AppUser> userManager)
+    public async Task SeedData(DataContext context, UserManager<AppUser> userManager)
     {
         if (!userManager.Users.Any())
         {
@@ -17,7 +17,7 @@ public class UserSeed
 
             foreach (var user in users)
             {
-                await userManager.CreateAsync(user, "PennState2019!");
+                await userManager.CreateAsync(user, "testpassword!");
             }
         }
     }

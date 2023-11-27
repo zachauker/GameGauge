@@ -1,14 +1,27 @@
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+
 namespace Persistence.Seeders;
+
 using IGDB;
 using ApiGenre = IGDB.Models.Genre;
 using DomainGenre = Domain.Entities.Genre;
 
 public class GenreSeed
 {
-    public static async Task SeedData(DataContext context)
+    private ILogger<GameCompanySeed> _logger;
+    private readonly DataContext _context;
+
+    public GenreSeed(DataContext context, ILogger<GameCompanySeed> logger)
     {
-        if (context.Genres.Any()) return;
-        
+        _context = context;
+        _logger = logger;
+    }
+
+    public async Task SeedData()
+    {
+        if (await _context.Genres.AnyAsync()) return;
+
         var igdb = new IGDBClient("3p2ubjeep5tco48ebgolo2o4a1cjek", "7d32ezra4dgof88c1dlkvwkve8g4zb");
 
         var apiGenres = await igdb.QueryAsync<ApiGenre>(IGDBClient.Endpoints.Genres, "fields *; limit 100;");
@@ -20,10 +33,10 @@ public class GenreSeed
                 Slug = apiGenre.Slug,
                 IgdbId = apiGenre.Id
             };
-            
-            await context.Genres.AddRangeAsync(genre);
+
+            await _context.Genres.AddRangeAsync(genre);
         }
 
-        await context.SaveChangesAsync();
+        await _context.SaveChangesAsync();
     }
 }

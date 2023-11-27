@@ -17,8 +17,21 @@ public static class ApplicationServiceExtensions
         {
             opt.UseNpgsql(config.GetConnectionString("DefaultConnection"));
         });
+        
+        // Seeders
+        services.AddScoped<GameSeed>();
+        services.AddScoped<PlatformSeed>();
+        services.AddScoped<GenreSeed>();
+        services.AddScoped<EngineSeed>();
+        services.AddScoped<CompanySeed>();
+        services.AddScoped<ReleaseDateSeed>();
+        services.AddScoped<AgeRatingSeed>();
+        services.AddScoped<UserSeed>();
         services.AddScoped<GameGenreSeed>();
         services.AddScoped<GameCompanySeed>();
+        services.AddScoped<GameAgeRatingSeed>();
+        services.AddScoped<GameEngineSeed>();
+        services.AddScoped<GamePlatformSeed>();
         
         services.AddIdentityServices(config);
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

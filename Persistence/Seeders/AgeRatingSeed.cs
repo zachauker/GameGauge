@@ -2,15 +2,26 @@ using Domain.Entities;
 using ApiRating = IGDB.Models.AgeRating;
 using DomainAgeRating = Domain.Entities.AgeRating;
 using IGDB;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 
 namespace Persistence.Seeders;
 
-public static class AgeRatingSeed
+public class AgeRatingSeed
 {
-    public static async Task SeedData(DataContext context)
+    private ILogger<GameCompanySeed> _logger;
+    private readonly DataContext _context;
+
+    public AgeRatingSeed(ILogger<GameCompanySeed> logger, DataContext context)
     {
-        if (context.AgeRatings.Any()) return;
+        _logger = logger;
+        _context = context;
+    }
+    
+    public async Task SeedData()
+    {
+        if (await _context.AgeRatings.AnyAsync()) return;
 
         const int limit = 250;
         var offset = 0;
@@ -18,17 +29,17 @@ public static class AgeRatingSeed
         var igdb = new IGDBClient("3p2ubjeep5tco48ebgolo2o4a1cjek", "7d32ezra4dgof88c1dlkvwkve8g4zb");
 
         var ratings = await FetchPage(igdb, limit, offset);
-        ProcessRatings(ratings, context);
+        ProcessRatings(ratings);
 
         while (ratings.Length == limit)
         {
             offset += limit;
             ratings = await FetchPage(igdb, limit, offset);
-            ProcessRatings(ratings, context);
+            ProcessRatings(ratings);
         }
     }
 
-    private static async Task<ApiRating[]> FetchPage(IGDBClient client, int limit, int offset)
+    private async Task<ApiRating[]> FetchPage(IGDBClient client, int limit, int offset)
     {
         var query = $"""
                      
@@ -42,7 +53,7 @@ public static class AgeRatingSeed
         return apiRatings;
     }
 
-    private static async void ProcessRatings(IEnumerable<ApiRating> apiRatings, DataContext context)
+    private async void ProcessRatings(IEnumerable<ApiRating> apiRatings)
     {
         foreach (var apiRating in apiRatings)
         {
@@ -53,9 +64,9 @@ public static class AgeRatingSeed
                 Synopsis = apiRating.Synopsis,
                 IgdbId = apiRating.Id
             };
-            await context.AgeRatings.AddRangeAsync(rating);
+            await _context.AgeRatings.AddRangeAsync(rating);
         }
-        
-        await context.SaveChangesAsync();
+
+        await _context.SaveChangesAsync();
     }
 }

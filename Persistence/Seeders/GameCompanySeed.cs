@@ -23,35 +23,27 @@ public class GameCompanySeed
     {
         if (await _context.GameCompanies.AnyAsync()) return;
 
-        const int limit = 250;
+        const int limit = 500;
         var offset = 0;
 
         var igdb = new IGDBClient("3p2ubjeep5tco48ebgolo2o4a1cjek", "7d32ezra4dgof88c1dlkvwkve8g4zb");
 
-        var companies = await _context.Companies.AsNoTracking().ToListAsync();
+        var apiGames = await FetchPage(igdb, limit, offset);
+        ProcessGames(apiGames);
 
-        foreach (var company in companies)
+        while (apiGames.Length == limit)
         {
-            var apiGames = await FetchPage(igdb, company.IgdbId, limit, offset);
-            ProcessGames(apiGames, company);
-
-            while (apiGames.Length == limit)
-            {
-                offset += limit;
-                apiGames = await FetchPage(igdb, company.IgdbId, limit, offset);
-                ProcessGames(apiGames, company);
-            }
-
-            offset = 0;
+            offset += limit;
+            apiGames = await FetchPage(igdb, limit, offset);
+            ProcessGames(apiGames);
         }
     }
 
-    private static async Task<ApiGame[]> FetchPage(IGDBClient client, long? companyId, int limit, int offset)
+    private static async Task<ApiGame[]> FetchPage(IGDBClient client, int limit, int offset)
     {
         var query = $"""
                      
                                      fields name,id,involved_companies.*;
-                                     where involved_companies = ({companyId});
                                      limit {limit};
                                      offset {offset};
                                      
@@ -61,10 +53,10 @@ public class GameCompanySeed
         return apiGames;
     }
 
-    private async void ProcessGames(IEnumerable<ApiGame> apiGames, Company company)
+    private async void ProcessGames(IEnumerable<ApiGame> apiGames)
     {
         var gameCompaniesToAdd = new List<GameCompany>();
-        
+
         foreach (var apiGame in apiGames)
         {
             if (apiGame == null) continue;
@@ -73,26 +65,31 @@ public class GameCompanySeed
 
             if (game != null)
             {
-                var existingGameCompany =
-                    _context.GameCompanies.FirstOrDefault(gc => gc.GameId == game.Id && gc.CompanyId == company.Id);
+                if (apiGame.InvolvedCompanies != null)
+                    foreach (var apiCompany in apiGame.InvolvedCompanies.Values)
+                    {
+                        var company = _context.Companies.FirstOrDefault(c => c.IgdbId == apiCompany.Id);
+                        if (company != null)
+                        {
+                            var existingGameCompany =
+                                _context.GameCompanies.FirstOrDefault(gc =>
+                                    gc.GameId == game.Id && gc.CompanyId == company.Id);
 
-                if (existingGameCompany != null) continue;
+                            if (existingGameCompany != null) continue;
+                            
+                            var gameCompany = new GameCompany()
+                            {
+                                GameId = game.Id,
+                                CompanyId = company.Id,
+                                IsDeveloper = apiCompany.Developer,
+                                IsPorter = apiCompany.Porting,
+                                IsPublisher = apiCompany.Publisher,
+                                IsSupporter = apiCompany.Supporting
+                            };
 
-                var apiCompany = apiGame.InvolvedCompanies.Values.FirstOrDefault(c => c.Id == company.IgdbId);
-
-                if (apiCompany == null) continue;
-
-                var gameCompany = new GameCompany()
-                {
-                    GameId = game.Id,
-                    CompanyId = company.Id,
-                    IsDeveloper = apiCompany.Developer,
-                    IsPorter = apiCompany.Porting,
-                    IsPublisher = apiCompany.Publisher,
-                    IsSupporter = apiCompany.Supporting
-                };
-
-                gameCompaniesToAdd.Add(gameCompany);
+                            gameCompaniesToAdd.Add(gameCompany);
+                        }
+                    }
             }
         }
 
