@@ -10,11 +10,15 @@
   },
   "dependencies": {
     "@mdi/font": "7.0.96",
+    "apicalypse": "^0.2.0",
     "axios": "^1.5.1",
     "core-js": "^3.29.0",
+    "events": "^3.3.0",
     "lodash": "^4.17.21",
     "pinia": "^2.0.0",
     "roboto-fontface": "*",
+    "secure-ls": "^1.2.6",
+    "util": "^0.12.5",
     "vue": "^3.2.0",
     "vue-router": "^4.0.0",
     "vuetify": "^3.4.0"
