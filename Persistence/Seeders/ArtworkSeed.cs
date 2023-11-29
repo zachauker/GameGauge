@@ -10,10 +10,10 @@ namespace Persistence.Seeders;
 
 public class ArtworkSeed
 {
-    private ILogger<GameCompanySeed> _logger;
+    private ILogger<ArtworkSeed> _logger;
     private readonly DataContext _context;
 
-    public ArtworkSeed(DataContext context, ILogger<GameCompanySeed> logger)
+    public ArtworkSeed(DataContext context, ILogger<ArtworkSeed> logger)
     {
         _context = context;
         _logger = logger;

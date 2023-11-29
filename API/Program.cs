@@ -102,6 +102,9 @@ try
 
         var gameVideoSeed = services.GetRequiredService<GameVideoSeed>();
         await gameVideoSeed.SeedData();
+
+        var screenShotSeed = services.GetRequiredService<ScreenshotSeed>();
+        await screenShotSeed.SeedData();
     }
     
     if (args.Contains("GameRelationSeed"))

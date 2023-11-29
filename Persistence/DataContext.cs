@@ -175,4 +175,5 @@ public class DataContext : IdentityDbContext<AppUser>
     public DbSet<Artwork> Artworks { get; set; }
     public DbSet<Cover> Covers { get; set; }
     public DbSet<GameVideo> GameVideos { get; set; }
+    public DbSet<Screenshot> Screenshots { get; set; }
 }

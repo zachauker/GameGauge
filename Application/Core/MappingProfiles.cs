@@ -15,6 +15,7 @@ using Application.GameVideos;
 using Application.Reviews;
 using Application.Genres;
 using Application.Platforms;
+using Application.Screenshots;
 using AutoMapper;
 using UserProfile = Application.Profiles.Profile;
 using Domain.Entities;
@@ -59,6 +60,7 @@ public class MappingProfiles : Profile
         CreateMap<Artwork, ArtworkDto>();
         CreateMap<Cover, CoverDto>();
         CreateMap<GameVideo, GameVideoDto>();
+        CreateMap<Screenshot, ScreenshotDto>();
         
         CreateMap<Review, ReviewDto>()
             .ForMember(d => d.UserProfile, o => o.MapFrom(s => s.User))

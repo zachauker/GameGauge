@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Persistence;
@@ -11,9 +12,11 @@ using Persistence;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20231129002050_ScreenshotEntity")]
+    partial class ScreenshotEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -281,17 +284,11 @@ namespace Persistence.Migrations
                         .HasColumnType("timestamp")
                         .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
-                    b.Property<double>("CriticScore")
-                        .HasColumnType("double precision");
-
                     b.Property<string>("Description")
                         .HasColumnType("text");
 
                     b.Property<long?>("IgdbId")
                         .HasColumnType("bigint");
-
-                    b.Property<int>("NumberCriticScores")
-                        .HasColumnType("integer");
 
                     b.Property<int>("NumberRatings")
                         .HasColumnType("integer");
@@ -1047,7 +1044,7 @@ namespace Persistence.Migrations
             modelBuilder.Entity("Domain.Entities.Screenshot", b =>
                 {
                     b.HasOne("Domain.Entities.Game", "Game")
-                        .WithMany("Screenshots")
+                        .WithMany()
                         .HasForeignKey("GameId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1149,8 +1146,6 @@ namespace Persistence.Migrations
                     b.Navigation("Platforms");
 
                     b.Navigation("Reviews");
-
-                    b.Navigation("Screenshots");
 
                     b.Navigation("Videos");
                 });

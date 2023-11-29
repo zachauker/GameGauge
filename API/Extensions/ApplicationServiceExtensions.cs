@@ -35,6 +35,7 @@ public static class ApplicationServiceExtensions
         services.AddScoped<ArtworkSeed>();
         services.AddScoped<CoverSeed>();
         services.AddScoped<GameVideoSeed>();
+        services.AddScoped<ScreenshotSeed>();
         
         services.AddIdentityServices(config);
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
