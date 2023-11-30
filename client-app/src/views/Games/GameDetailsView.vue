@@ -1,8 +1,9 @@
 <script setup>
-import {ref } from "vue"
-import { onMounted } from "vue";
+import {ref, onMounted} from "vue"
+import GameDetailsHeader from "@/components/Games/GameDetailsHeader.vue"
 import gameApi from "@/api/GameApi"
 import {useRoute} from "vue-router"
+
 const route = useRoute()
 const game = ref(null)
 
@@ -16,13 +17,15 @@ onMounted(() => {
 </script>
 
 <template>
-  <v-container :fluid="true">
-    <v-row align="center" justify="center" v-if="game">
-      <v-col cols="12">
-        {{ game.title }}
-      </v-col>
-    </v-row>
-  </v-container>
+  <div v-if="game">
+    <game-details-header :game="game"/>
+    <v-container :fluid="true">
+      <v-row align="center" justify="center" v-if="game">
+        <v-col cols="12">
+        </v-col>
+      </v-row>
+    </v-container>
+  </div>
 </template>
 
 <style scoped>

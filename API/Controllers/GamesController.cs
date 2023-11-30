@@ -1,7 +1,11 @@
 using Application;
+using Application.GamePlatforms;
 using Application.Games;
+using Application.Platforms;
 using Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
+using Details = Application.Games.Details;
+using List = Application.Games.List;
 
 namespace API.Controllers;
 

@@ -1,5 +1,7 @@
 using Application.AgeRatings;
+using Application.Artworks;
 using Application.Companies;
+using Application.Covers;
 using Application.Engines;
 using Application.GameAgeRatings;
 using Application.GameCompanies;
@@ -9,9 +11,11 @@ using Application.GameListGames;
 using Application.GameLists;
 using Application.GamePlatforms;
 using Application.Games;
+using Application.GameVideos;
 using Application.Reviews;
 using Application.Genres;
 using Application.Platforms;
+using Application.Screenshots;
 using AutoMapper;
 using UserProfile = Application.Profiles.Profile;
 using Domain.Entities;
@@ -53,6 +57,11 @@ public class MappingProfiles : Profile
         CreateMap<AgeRating, AgeRatingDto>();
         CreateMap<GameAgeRating, GameAgeRatingDto>();
 
+        CreateMap<Artwork, ArtworkDto>();
+        CreateMap<Cover, CoverDto>();
+        CreateMap<GameVideo, GameVideoDto>();
+        CreateMap<Screenshot, ScreenshotDto>();
+        
         CreateMap<Review, ReviewDto>()
             .ForMember(d => d.UserProfile, o => o.MapFrom(s => s.User))
             .ForMember(d => d.Game, o => o.MapFrom(s => s.Game));

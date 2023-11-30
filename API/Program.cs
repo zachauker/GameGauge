@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using API.Extensions;
 using Domain.Entities;
 using Microsoft.AspNetCore.Identity;
@@ -45,42 +46,83 @@ try
 
     if (args.Contains("UserSeed"))
     {
-        await UserSeed.SeedData(context, userManager);
+        var userSeed = services.GetRequiredService<UserSeed>();
+        await userSeed.SeedData(context, userManager);
     }
 
     if (args.Contains("AgeRatingSeed"))
     {
-        await AgeRatingSeed.SeedData(context);
+        var ageRatingSeed = services.GetRequiredService<AgeRatingSeed>();
+        await ageRatingSeed.SeedData();
     }
 
     if (args.Contains("CompanySeed"))
     {
-        await CompanySeed.SeedData(context);
+        var companySeed = services.GetRequiredService<CompanySeed>();
+        await companySeed.SeedData();
     }
 
     if (args.Contains("EngineSeed"))
     {
-        await EngineSeed.SeedData(context);
+        var engineSeed = services.GetRequiredService<EngineSeed>();
+        await engineSeed.SeedData();
     }
 
     if (args.Contains("GenreSeed"))
     {
-        await GenreSeed.SeedData(context);
+        var genreSeed = services.GetRequiredService<GenreSeed>();
+        await genreSeed.SeedData();
     }
 
     if (args.Contains("PlatformSeed"))
     {
-        await PlatformSeed.SeedData(context);
+        var platformSeed = services.GetRequiredService<PlatformSeed>();
+        await platformSeed.SeedData();
     }
 
     if (args.Contains("GameSeed"))
     {
-        await GameSeed.SeedData(context);
+        var gameSeed = services.GetRequiredService<GameSeed>();
+        await gameSeed.SeedData();
     }
 
     if (args.Contains("ReleaseDateSeed"))
     {
-        await ReleaseDateSeed.SeedData(context);
+        var releaseDateSeed = services.GetRequiredService<ReleaseDateSeed>();
+        await releaseDateSeed.SeedData();
+    }
+
+    if (args.Contains("MediaSeed"))
+    {
+        var artworkSeed = services.GetRequiredService<ArtworkSeed>();
+        await artworkSeed.SeedData();
+
+        var coverSeed = services.GetRequiredService<CoverSeed>();
+        await coverSeed.SeedData();
+
+        var gameVideoSeed = services.GetRequiredService<GameVideoSeed>();
+        await gameVideoSeed.SeedData();
+
+        var screenShotSeed = services.GetRequiredService<ScreenshotSeed>();
+        await screenShotSeed.SeedData();
+    }
+    
+    if (args.Contains("GameRelationSeed"))
+    {
+        var gameCompanySeeder = services.GetRequiredService<GameCompanySeed>();
+        await gameCompanySeeder.SeedData();
+        
+        var gameGenreSeeder = services.GetRequiredService<GameGenreSeed>();
+        await gameGenreSeeder.SeedData();
+
+        var gameAgeRatingSeed = services.GetRequiredService<GameAgeRatingSeed>();
+        await gameAgeRatingSeed.SeedData();
+
+        var gameEngineSeed = services.GetRequiredService<GameEngineSeed>();
+        await gameEngineSeed.SeedData();
+
+        var gamePlatformSeed = services.GetRequiredService<GamePlatformSeed>();
+        await gamePlatformSeed.SeedData();
     }
 }
 catch (Exception e)

@@ -24,4 +24,5 @@ public class GameDto
     public ICollection<EngineDto> Engines { get; set; }
     public ICollection<CompanyDto> Companies { get; set; }
     public ICollection<AgeRatingDto> AgeRatings { get; set; }
+    public ICollection<Cover> Covers { get; set; }
 }

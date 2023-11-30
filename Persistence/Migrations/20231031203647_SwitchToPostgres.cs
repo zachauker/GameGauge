@@ -72,11 +72,6 @@ namespace Persistence.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Companies", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Companies_Companies_ParentId",
-                        column: x => x.ParentId,
-                        principalTable: "Companies",
-                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -543,11 +538,6 @@ namespace Persistence.Migrations
                 table: "AspNetUsers",
                 column: "NormalizedUserName",
                 unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Companies_ParentId",
-                table: "Companies",
-                column: "ParentId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_EnginePlatform_PlatformId",

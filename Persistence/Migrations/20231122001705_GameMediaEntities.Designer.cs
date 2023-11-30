@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Persistence;
@@ -11,9 +12,11 @@ using Persistence;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20231122001705_GameMediaEntities")]
+    partial class GameMediaEntities
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -176,6 +179,9 @@ namespace Persistence.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("text");
 
+                    b.Property<Guid?>("ParentId")
+                        .HasColumnType("uuid");
+
                     b.Property<string>("Slug")
                         .HasColumnType("text");
 
@@ -188,6 +194,8 @@ namespace Persistence.Migrations
                         .HasColumnType("text");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ParentId");
 
                     b.ToTable("Companies");
                 });
@@ -281,17 +289,11 @@ namespace Persistence.Migrations
                         .HasColumnType("timestamp")
                         .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
-                    b.Property<double>("CriticScore")
-                        .HasColumnType("double precision");
-
                     b.Property<string>("Description")
                         .HasColumnType("text");
 
                     b.Property<long?>("IgdbId")
                         .HasColumnType("bigint");
-
-                    b.Property<int>("NumberCriticScores")
-                        .HasColumnType("integer");
 
                     b.Property<int>("NumberRatings")
                         .HasColumnType("integer");
@@ -333,7 +335,7 @@ namespace Persistence.Migrations
 
                     b.HasIndex("AgeRatingId");
 
-                    b.ToTable("GameAgeRatings");
+                    b.ToTable("GameAgeRating");
                 });
 
             modelBuilder.Entity("Domain.Entities.GameCompany", b =>
@@ -344,16 +346,16 @@ namespace Persistence.Migrations
                     b.Property<Guid>("CompanyId")
                         .HasColumnType("uuid");
 
-                    b.Property<bool?>("IsDeveloper")
+                    b.Property<bool>("IsDeveloper")
                         .HasColumnType("boolean");
 
-                    b.Property<bool?>("IsPorter")
+                    b.Property<bool>("IsPorter")
                         .HasColumnType("boolean");
 
-                    b.Property<bool?>("IsPublisher")
+                    b.Property<bool>("IsPublisher")
                         .HasColumnType("boolean");
 
-                    b.Property<bool?>("IsSupporter")
+                    b.Property<bool>("IsSupporter")
                         .HasColumnType("boolean");
 
                     b.HasKey("GameId", "CompanyId");
@@ -667,37 +669,6 @@ namespace Persistence.Migrations
                     b.ToTable("Reviews");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Screenshot", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("GameId")
-                        .HasColumnType("uuid");
-
-                    b.Property<int?>("Height")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("ImageId")
-                        .HasColumnType("text");
-
-                    b.Property<bool>("IsAnimated")
-                        .HasColumnType("boolean");
-
-                    b.Property<string>("Url")
-                        .HasColumnType("text");
-
-                    b.Property<int?>("Width")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("GameId");
-
-                    b.ToTable("Screenshots");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
                     b.Property<string>("Id")
@@ -839,6 +810,15 @@ namespace Persistence.Migrations
                         .IsRequired();
 
                     b.Navigation("Game");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Company", b =>
+                {
+                    b.HasOne("Domain.Entities.Company", "Parent")
+                        .WithMany()
+                        .HasForeignKey("ParentId");
+
+                    b.Navigation("Parent");
                 });
 
             modelBuilder.Entity("Domain.Entities.Cover", b =>
@@ -1044,17 +1024,6 @@ namespace Persistence.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Screenshot", b =>
-                {
-                    b.HasOne("Domain.Entities.Game", "Game")
-                        .WithMany("Screenshots")
-                        .HasForeignKey("GameId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Game");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -1149,8 +1118,6 @@ namespace Persistence.Migrations
                     b.Navigation("Platforms");
 
                     b.Navigation("Reviews");
-
-                    b.Navigation("Screenshots");
 
                     b.Navigation("Videos");
                 });

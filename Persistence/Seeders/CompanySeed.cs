@@ -1,4 +1,6 @@
 using IGDB;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using DomainCompany = Domain.Entities.Company;
 using ApiCompany = IGDB.Models.Company;
 
@@ -6,26 +8,29 @@ namespace Persistence.Seeders;
 
 public class CompanySeed
 {
-    public static async Task SeedData(DataContext context)
+    private ILogger<GameCompanySeed> _logger;
+    private readonly DataContext _context;
+
+    public async Task SeedData()
     {
-        if (context.Companies.Any()) return;
+        if (await _context.Companies.AnyAsync()) return;
 
         var igdb = new IGDBClient("3p2ubjeep5tco48ebgolo2o4a1cjek", "7d32ezra4dgof88c1dlkvwkve8g4zb");
         const int limit = 250;
         var offset = 0;
 
         var companies = await FetchPage(igdb, limit, offset);
-        ProcessCompanies(companies, context);
+        ProcessCompanies(companies);
 
         while (companies.Length == limit)
         {
             offset += limit;
             companies = await FetchPage(igdb, limit, offset);
-            ProcessCompanies(companies, context);
+            ProcessCompanies(companies);
         }
     }
 
-    private static async Task<ApiCompany[]> FetchPage(IGDBClient client, int limit, int offset)
+    private async Task<ApiCompany[]> FetchPage(IGDBClient client, int limit, int offset)
     {
         var query = $"""
                      
@@ -39,7 +44,7 @@ public class CompanySeed
         return apiCompanies;
     }
 
-    private static async void ProcessCompanies(IEnumerable<ApiCompany> apiCompanies, DataContext context)
+    private async void ProcessCompanies(IEnumerable<ApiCompany> apiCompanies)
     {
         foreach (var apiCompany in apiCompanies)
         {
@@ -51,9 +56,9 @@ public class CompanySeed
                 IgdbId = apiCompany.Id
             };
 
-            await context.Companies.AddRangeAsync(company);
+            await _context.Companies.AddRangeAsync(company);
         }
 
-        await context.SaveChangesAsync();
+        await _context.SaveChangesAsync();
     }
 }
