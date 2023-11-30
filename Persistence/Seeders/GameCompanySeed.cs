@@ -59,37 +59,61 @@ public class GameCompanySeed
 
         foreach (var apiGame in apiGames)
         {
-            if (apiGame == null) continue;
+            if (apiGame == null || apiGame.InvolvedCompanies == null) continue;
 
-            var game = _context.Games.FirstOrDefault(game => game.IgdbId == apiGame.Id);
+            var game = _context.Games.FirstOrDefault(g => g.IgdbId == apiGame.Id);
+            if (game == null) continue;
 
-            if (game != null)
+            // Collect and aggregate roles
+            var companyRoles =
+                new Dictionary<int, (bool? isDeveloper, bool? isPorter, bool? isPublisher, bool? isSupporter)>();
+
+            foreach (var apiCompany in apiGame.InvolvedCompanies.Values)
             {
-                if (apiGame.InvolvedCompanies != null)
-                    foreach (var apiCompany in apiGame.InvolvedCompanies.Values)
+                // Skip if company ID is null or not in the int range
+                if (!apiCompany.Company.Id.HasValue || apiCompany.Company.Id > int.MaxValue)
+                    continue;
+
+                var companyId = (int)apiCompany.Company.Id;
+
+                if (companyRoles.TryGetValue(companyId, out var roles))
+                {
+                    roles.isDeveloper |= apiCompany.Developer;
+                    roles.isPorter |= apiCompany.Porting;
+                    roles.isPublisher |= apiCompany.Publisher;
+                    roles.isSupporter |= apiCompany.Supporting;
+                    companyRoles[companyId] = roles;
+                }
+                else
+                {
+                    companyRoles.Add(companyId,
+                        (apiCompany.Developer, apiCompany.Porting, apiCompany.Publisher, apiCompany.Supporting));
+                }
+            }
+
+            // Process each aggregated company role
+            foreach (var (companyId, roles) in companyRoles)
+            {
+                var company = _context.Companies.FirstOrDefault(c => c.IgdbId == companyId);
+                if (company == null) continue;
+
+                var existingGameCompany = _context.GameCompanies
+                    .AsNoTracking()
+                    .FirstOrDefault(gc => gc.GameId == game.Id && gc.CompanyId == company.Id);
+
+                if (existingGameCompany == null)
+                {
+                    var gameCompany = new GameCompany()
                     {
-                        var company = _context.Companies.FirstOrDefault(c => c.IgdbId == apiCompany.Id);
-                        if (company != null)
-                        {
-                            var existingGameCompany =
-                                _context.GameCompanies.FirstOrDefault(gc =>
-                                    gc.GameId == game.Id && gc.CompanyId == company.Id);
-
-                            if (existingGameCompany != null) continue;
-                            
-                            var gameCompany = new GameCompany()
-                            {
-                                GameId = game.Id,
-                                CompanyId = company.Id,
-                                IsDeveloper = apiCompany.Developer,
-                                IsPorter = apiCompany.Porting,
-                                IsPublisher = apiCompany.Publisher,
-                                IsSupporter = apiCompany.Supporting
-                            };
-
-                            gameCompaniesToAdd.Add(gameCompany);
-                        }
-                    }
+                        GameId = game.Id,
+                        CompanyId = company.Id,
+                        IsDeveloper = roles.isDeveloper,
+                        IsPorter = roles.isPorter,
+                        IsPublisher = roles.isPublisher,
+                        IsSupporter = roles.isSupporter
+                    };
+                    gameCompaniesToAdd.Add(gameCompany);
+                }
             }
         }
 

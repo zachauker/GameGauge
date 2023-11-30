@@ -2,6 +2,7 @@ using Application.AgeRatings;
 using Application.Companies;
 using Application.Engines;
 using Application.GameAgeRatings;
+using Application.GameCompanies;
 using Application.Genres;
 using Application.Platforms;
 using Domain.Entities;
@@ -22,7 +23,7 @@ public class GameDto
     public ICollection<PlatformDto> Platforms { get; set; }
     public ICollection<GenreDto> Genres { get; set; }
     public ICollection<EngineDto> Engines { get; set; }
-    public ICollection<CompanyDto> Companies { get; set; }
+    public ICollection<GameCompanyDto> Companies { get; set; }
     public ICollection<AgeRatingDto> AgeRatings { get; set; }
     public ICollection<Cover> Covers { get; set; }
 }

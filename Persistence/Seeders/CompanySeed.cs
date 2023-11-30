@@ -11,12 +11,18 @@ public class CompanySeed
     private ILogger<GameCompanySeed> _logger;
     private readonly DataContext _context;
 
+    public CompanySeed(DataContext context, ILogger<GameCompanySeed> logger)
+    {
+        _context = context;
+        _logger = logger;
+    }
+
     public async Task SeedData()
     {
         if (await _context.Companies.AnyAsync()) return;
 
         var igdb = new IGDBClient("3p2ubjeep5tco48ebgolo2o4a1cjek", "7d32ezra4dgof88c1dlkvwkve8g4zb");
-        const int limit = 250;
+        const int limit = 500;
         var offset = 0;
 
         var companies = await FetchPage(igdb, limit, offset);
@@ -46,18 +52,26 @@ public class CompanySeed
 
     private async void ProcessCompanies(IEnumerable<ApiCompany> apiCompanies)
     {
+        var companiesToAdd = new List<DomainCompany>();
         foreach (var apiCompany in apiCompanies)
         {
-            var company = new DomainCompany
+            if (apiCompany != null)
             {
-                Name = apiCompany.Name,
-                Slug = apiCompany.Slug,
-                Description = apiCompany.Description,
-                IgdbId = apiCompany.Id
-            };
+                var company = new DomainCompany
+                {
+                    Name = apiCompany.Name,
+                    Slug = apiCompany.Slug,
+                    Description = apiCompany.Description,
+                    IgdbId = apiCompany.Id,
+                    Url = apiCompany.Url,
+                    FoundedDate = apiCompany.StartDate
+                };
 
-            await _context.Companies.AddRangeAsync(company);
+                companiesToAdd.Add(company);
+            }
         }
+
+        await _context.Companies.AddRangeAsync(companiesToAdd);
 
         await _context.SaveChangesAsync();
     }

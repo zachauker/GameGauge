@@ -5,7 +5,6 @@ namespace Application.GameCompanies;
 public class GameCompanyDto
 {
     public Guid GameId { get; set; }
-    public Game Game { get; set; }
     public Guid CompanyId { get; set; }
     public Company Company { get; set; }
     public bool IsDeveloper { get; set; }

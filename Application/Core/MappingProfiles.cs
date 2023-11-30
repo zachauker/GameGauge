@@ -33,7 +33,7 @@ public class MappingProfiles : Profile
         CreateMap<Game, GameDto>()
             .ForMember(dest => dest.Genres, opt => opt.MapFrom(src => src.Genres.Select(gg => gg.Genre)))
             .ForMember(dest => dest.Companies,
-                opt => opt.MapFrom(src => src.InvolvedCompanies.Select(ic => ic.Company)))
+                opt => opt.MapFrom(src => src.InvolvedCompanies))
             .ForMember(dest => dest.Engines, opt => opt.MapFrom(g => g.Engines.Select(ge => ge.Engine)))
             .ForMember(dest => dest.AgeRatings, opt => opt.MapFrom(src => src.AgeRatings.Select(ga => ga.AgeRating)))
             .ForMember(dest => dest.Platforms, opt => opt.MapFrom(src => src.Platforms.Select(gp => gp.Platform)));
