@@ -46,7 +46,3 @@
 
 10. With this running, the application is now accessible and can be navigated to at the following URL:
  [http://localhost:3000](http://localhost:3000)
-
-
-10. With this running, the application is now accessible and can be navigated to at the following URL:
- [http://localhost:3000](http://localhost:3000)
